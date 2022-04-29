@@ -1,8 +1,32 @@
-import { useRoutes,BrowserRouter, Routes,HashRouter ,Switch} from 'react-router-dom';
-import './App.css';
-import  routers  from './router'
-console.log(routers)
-function App() {
- // return useRoutes(routers);
-}
+import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
+//import { DotLoading } from 'antd-mobile';
+//import { Provider } from 'react-redux';
+import RouterComponent from './router';
+//import Header from '@/components/header';
+//import store from '@/store';
+//import style from './app.module.less';
+
+const App = () => {
+  return (
+    <div>
+      <React.Suspense>
+        <BrowserRouter>
+          <RouterComponent />
+        </BrowserRouter>
+      </React.Suspense>
+    </div>
+    /*<Provider store={store}>
+      <div className={style.appBody}>
+        <React.Suspense fallback={<DotLoading />}>
+          <BrowserRouter>
+            <Header />
+            <RouterComponent />
+          </BrowserRouter>
+        </React.Suspense>
+      </div>
+    </Provider>*/
+  );
+};
+
 export default App;

@@ -6,3 +6,5 @@ export default [
     component: Home
   }
 ]
+/*
+https://github.com/JohnnyZhangQiao/lottery-box-react*/
