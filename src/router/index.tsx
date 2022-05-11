@@ -1,14 +1,10 @@
-import React, { FC, useEffect } from 'react';
+import React, {FC, useEffect, lazy} from 'react';
 import routes from './routesConfig';
-import { Route, Routes, useNavigate, Navigate } from 'react-router-dom';
-// @ts-ignore
-import { IRoute } from '@/types/router';
-
+import {Route, Routes, useNavigate, Navigate, BrowserRouter} from 'react-router-dom';
 // 路由装饰器
-const RouteDecorator = (props: { route: IRoute }) => {
-  const { route } = props;
+const RouteDecorator = (props: { route: any }) => {
+  const {route} = props;
   const navigate = useNavigate();
-
   useEffect(() => {
     // 鉴权路由守卫
     if (route.meta?.requireAuth) {
@@ -21,22 +17,18 @@ const RouteDecorator = (props: { route: IRoute }) => {
     route.beforeCreate && route.beforeCreate(route);
     return () => route.beforeDestroy && route.beforeDestroy(route);
   }, [route]);
-
   return <route.component />;
 };
-
 const RouterComponent: FC = () => (
-<Routes>
-  {/*<Route path="/" element={<Navigate to="/index" />} />
-    <Route path="*" element={<ErrorBlock fullPage />} />*/}
-  {routes.map(route => (
-  <Route
-  key={route.path}
-  path={route.path}
-  element={<RouteDecorator route={route} />}
-  />
-  ))}
-</Routes>
+  <React.Suspense fallback={<div>...</div>}>
+    <Routes>
+      {
+        routes.map(route => <Route key={route.path} path={route.path} element={<route.component />}>
+        </Route>)
+      }
+      {/*<Route path="/" element={<Index />} />*/}
+    </Routes>
+  </React.Suspense>
 );
 
 export default RouterComponent;

@@ -1,0 +1,76 @@
+@charset "UTF-8";
+//reset
+html, body, div, table, td, th, tr, input, button, h1, h2, h3, h4, pre, ul, li {
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-size: 14px;
+  color: #333;
+}
+i {
+  font-style: normal
+}
+ul, li {
+  list-style: none
+}
+a {
+  text-decoration: none;
+  color: #333
+}
+* {
+  box-sizing: border-box;
+}
+// demo style
+.logo {display: flex;align-items: center;justify-content: center;font-size: 20px;font-weight: 700;padding: 10px 0;
+  img {width: 35px;}
+}
+.sidebar {position: fixed;height: 100vh;width: 180px;overflow: hidden;overflow-y: auto;border-right: 1px solid #ddd;
+  li {margin: 0;list-style: none;padding: 0;font-size: 14px;overflow: hidden;
+    text-overflow: ellipsis;cursor: pointer;}
+  a {font-size: 16px;color: #333;line-height: 35px;height: 35px;margin: 0;padding: 0 25px;text-decoration: none;display: block;position: relative;-webkit-transition: .15s ease-out;transition: .15s ease-out;border-left: 3px solid transparent;
+    &:hover {color: #07c160}
+  }
+  .active {color: #07c160;background: rgba(7, 229, 108, 0.19);border-left-color: #07c160}
+}
+.docs-demo {padding: 20px 20px 20px 200px;
+  h1 {margin-bottom: 30px}
+  h2 {margin-bottom: 20px}
+  h3 {margin-bottom: 10px;}
+  .md-demo {
+    .card {border: 1px solid #eaeefb;margin-bottom: 20px;
+      &.hide {
+        .code-block {display: none;}
+        .control-block{
+          span{
+            &:before{content: 'show';}
+          }
+        }
+      }
+    }
+    .demo-button{padding: 20px}
+    .demo-block-title{border-bottom: 1px solid #eaeefb;padding: 10px 20px}
+    .code-block{color: #abb2bf;padding: 20px;background: #282c34;line-height: 20px}
+    .control-block {border-top: 1px solid #eaeefb;
+      span {display: flex; align-items: center; justify-content: center; height: 44px;cursor: pointer;
+        &:before{content: 'hidden';color: #d3dce6}
+        &:hover{
+          &:before{color: #07c160}
+        }
+      }
+    }
+  }
+  p code, table code { color: #444;
+    background-color: #eeffde;
+    margin: 0 4px;
+    display: inline-block;
+    padding: 3px 7px;
+    border-radius: 3px;
+    font-size: 14px;
+    line-height: 20px;}
+  .language-json, .language-javascript, .language-js {margin-bottom: 30px}
+}
+table {width: 100%;border-spacing: 0; border-collapse: collapse;border: 1px solid #eaeefb;margin-bottom: 20px;
+  th, td {border: 1px solid #eaeefb;color: #314659;text-align: left;padding: 10px 15px;}
+}
+
