@@ -1,0 +1,33 @@
+@charset "utf-8";
+@include ns(form-item) {
+  margin-bottom: 10px;line-height: 40px;position: relative;display: flex;
+  @include ns(form-label) { text-align: right;font-size: 14px;color: $textColor;padding: 0 10px 0 0;box-sizing: border-box;width: 90px;display: flex; align-items: center;
+    &.required {
+      &:before {content: '*';color: #f00;display: inline-block;vertical-align: middle;}
+    }
+  }
+  @include ns(form-box) {position: relative;display: flex;align-items: center;
+  }
+  /*错误提示*/
+  @include ns(form-tips) {color: #f00;margin: 0 5px;
+    &.icon-success {color: $primaryColor}
+    &.icon-tips {color: #999;}
+  }
+  &.form-item-mini{line-height: 28px;
+    @include ns(input-control){height: 28px; line-height: 28px;}
+    @include ns(btn){height: 28px; line-height: 28px;}
+  }
+  &.form-item-small{line-height: 32px;
+    @include ns(input-control){height: 32px;line-height: 32px;}
+    @include ns(btn){height: 32px;line-height: 32px;}
+  }
+  &.form-item-medium{line-height: 36px;
+    @include ns(input-control){height: 36px; line-height: 36px;}
+    @include ns(btn){height: 36px; line-height: 36px;}
+  }
+}
+@include ns(form-item-error) {
+  @include ns(input-control) {
+    border-color: #f00;
+  }
+}

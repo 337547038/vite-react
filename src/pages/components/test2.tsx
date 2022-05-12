@@ -1,16 +1,17 @@
-import React,{useState} from 'react'
+import React,{useState} from 'react';
 
 interface HeaderSearchProps {
   onSearch?: (value?: string) => void
   name?: string
   title?: string
   disabled?: boolean
-  onSubmit?: (values: any) => Promise<void>;
+  onSubmit: (values: any) => Promise<void>
+  children?: React.ReactNode;
 }
 
 const HeaderSearch: React.FC<HeaderSearchProps> = (props) => {
-  return (<div>test2{props.title},{props.name}</div>)
-}
+  return (<div>test2{props.title},{props.name}</div>);
+};
 HeaderSearch.defaultProps = {
   disabled: true,
 };
