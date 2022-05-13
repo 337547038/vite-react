@@ -43,24 +43,26 @@ const ButtonApp: React.FC<ButtonProps> = (props) => {
   });
   const style = {width: props.width};
   const bntIcon = props.loading ? 'loading' : props.icon
-  const onClick=()=>{
-    if(disabled){
+  const onClick = () => {
+    if (disabled) {
       return
     }
-    if(props.href){
+    if (props.href) {
       navigate(props.href)
+    } else {
+      props.onClick && props.onClick()
     }
   }
   return (<button
-    className={classes}
-    type={props.nativeType}
-    style={style}
-    onClick={onClick}
-    disabled={disabled}>
-    {bntIcon ?
-      <i className={`icon-${bntIcon} ${prefixCls}-icon`} /> : ''
-    }
-    {props.children}</button>
+      className={classes}
+      type={props.nativeType}
+      style={style}
+      onClick={onClick}
+      disabled={disabled}>
+      {bntIcon ?
+        <i className={`icon-${bntIcon} ${prefixCls}-icon`} /> : ''
+      }
+      {props.children}</button>
   )
 }
 ButtonApp.defaultProps = {

@@ -1,4 +1,5 @@
-import React,{useState} from 'react';
+import React,{useState,forwardRef} from 'react';
+import App from "../index";
 
 interface HeaderSearchProps {
   onSearch?: (value?: string) => void
@@ -8,11 +9,12 @@ interface HeaderSearchProps {
   onSubmit: (values: any) => Promise<void>
   children?: React.ReactNode;
 }
-
-const HeaderSearch: React.FC<HeaderSearchProps> = (props) => {
-  return (<div>test2{props.title},{props.name}</div>);
-};
+const HeaderSearch = React.forwardRef<HTMLDivElement, HeaderSearchProps>((props, ref) => {
+//const HeaderSearch: React.FC<HeaderSearchProps> = forwardRef((props,ref) => {
+  return (<div ref={ref}>test2{props.title},{props.name}</div>);
+});
 HeaderSearch.defaultProps = {
   disabled: true,
 };
+HeaderSearch.displayName='HeaderSearch'
 export default HeaderSearch;
