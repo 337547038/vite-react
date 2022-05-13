@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {BrowserRouter, Link} from 'react-router-dom';
+import {BrowserRouter, HashRouter,Link} from 'react-router-dom';
 import RouterComponent from './router';
 import './assets/scss/app.scss';
 import 'highlight.js/styles/github-dark.css'; // felipec
@@ -10,7 +10,7 @@ const App = () => {
   const local = window.location.pathname;
   const [path, setPath] = useState(local);
   return (
-    <BrowserRouter>
+    <HashRouter>
       {/*<div className="sidebar">
         <div className="logo"><img src={LogoImg} />AK-Docs</div>
         <ul>
@@ -32,7 +32,7 @@ const App = () => {
       </Routes>
       </React.Suspense>
     </BrowserRouter>*/}
-    </BrowserRouter>
+    </HashRouter>
   );
 };
 export default App;

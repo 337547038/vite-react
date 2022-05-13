@@ -17,6 +17,10 @@ Object.keys(docsFilesMd).forEach((key: string) => {
 export default [
   {
     path: '/',
+    component: lazy(() => import('../packages/README.md'))
+  },
+  {
+    path: '/test',
     component: lazy(() => import('../pages/index'))
   },
   {

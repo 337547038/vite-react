@@ -1,7 +1,7 @@
 import React, {useContext} from 'react'
 import classNames from 'classnames'
 import {prefixCls} from '../prefix'
-import {Link} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import FormContext from '../form/contextForm'
 
 interface ButtonProps {
@@ -16,7 +16,7 @@ interface ButtonProps {
   loading?: boolean // 是否加
   plain?: boolean // 是否为朴素按钮
   onClick?: () => void
-  children?: React.ReactNode;
+  children?: React.ReactNode
   className?: string
 }
 
@@ -32,6 +32,7 @@ const ButtonApp: React.FC<ButtonProps> = (props) => {
     // 表单设置了true时，使用父级表单设置的
     size = contextForm.size
   }
+  const navigate = useNavigate();
   const classes = classNames(props.className, {
     [`${prefixCls}-btn`]: true,
     'is-round': props.round,
@@ -42,27 +43,28 @@ const ButtonApp: React.FC<ButtonProps> = (props) => {
   });
   const style = {width: props.width};
   const bntIcon = props.loading ? 'loading' : props.icon
-  if (props.href) {
-    return (<Link to={props.href} className={classes} style={style}>
-      {bntIcon ?
-        <i className={`icon-${bntIcon} ${prefixCls}-icon`} /> : ''
-      }
-      {props.children}</Link>);
-  } else {
-    return (<button
-      className={classes}
-      type={props.nativeType}
-      style={style}
-      onClick={props.onClick}
-      disabled={disabled}>
-      {bntIcon ?
-        <i className={`icon-${bntIcon} ${prefixCls}-icon`} /> : ''
-      }
-      {props.children}</button>);
+  const onClick=()=>{
+    if(disabled){
+      return
+    }
+    if(props.href){
+      navigate(props.href)
+    }
   }
-};
+  return (<button
+    className={classes}
+    type={props.nativeType}
+    style={style}
+    onClick={onClick}
+    disabled={disabled}>
+    {bntIcon ?
+      <i className={`icon-${bntIcon} ${prefixCls}-icon`} /> : ''
+    }
+    {props.children}</button>
+  )
+}
 ButtonApp.defaultProps = {
   size: '',
   nativeType: 'button'
 };
-export default ButtonApp;
+export default ButtonApp

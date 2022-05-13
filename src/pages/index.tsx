@@ -28,7 +28,7 @@ function App() {
   return (
     <div>
       <ThemeContext.Provider value="dark">
-        <Button icon="search" loading={disabled} type='primary' className="btn" href='/tag'>默认按钮</Button>
+        <Button icon="search" loading={disabled} type='primary' className="btn" href='/tag' disabled={disabled}>默认按钮</Button>
         <Button name="name123" type='default' nativeType="button" onClick={onClick} disabled={disabled}>默认按钮</Button>
       </ThemeContext.Provider>
     </div>
