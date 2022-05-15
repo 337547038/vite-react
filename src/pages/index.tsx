@@ -1,4 +1,4 @@
-import React, {useState, useEffect,useContext,useRef,createRef } from 'react';
+import React, {useState, useEffect, useContext, useRef, createRef} from 'react';
 import Test from "./components/test";
 import Test2 from "./components/test2";
 import {BrowserRouter, Link, useParams, useSearchParams, useLocation} from 'react-router-dom';
@@ -6,9 +6,9 @@ import {BrowserRouter, Link, useParams, useSearchParams, useLocation} from 'reac
 // @ts-ignore
 import {Button} from '@/packages/button';
 import {Input} from '../packages/input';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import ThemeContext from './context/ThemeContext.js';
+import type {InputRef} from '../packages/input';
+
+
 /*
 function App() {
   const params = useParams(); // 获取动态路由的值
@@ -34,28 +34,45 @@ function App() {
     </div>
   );
 }*/
-interface ButtonProps{
-  name:string
+interface ButtonProps {
+  name: string
 }
-const App:React.FC<ButtonProps> = (props, ref) => {
-  const myDiv = useRef();
+
+const App: React.FC<ButtonProps> = (props) => {
+  const myDiv = useRef<InputRef>(null);
   const btn = useRef();
 
-  useEffect(()=>{
+  useEffect(() => {
     console.log("this.myDiv.current", myDiv);
-    console.log("this.btn.current", btn);
+    // console.log("this.btn.current", btn);
   })
-
-  return(
-    <div>
-      <Input ref={myDiv}></Input>
-      <Test2 ref={btn}></Test2>
-      {/*<Button ref={btn}></Button>*/}
-    </div>
+  const onClick = () => {
+    console.log(myDiv.current?.getValue())
+    myDiv.current?.focus()
+  }
+  const onChange = (val: string, evt: React.ChangeEvent) => {
+    console.log(val)
+    console.log(evt)
+  }
+  const onBlur = (val: string, evt: React.ChangeEvent) => {
+    console.log(val)
+    console.log(evt)
+  }
+  let value = '45'
+  const prepend = '123'
+  const append = (<div>4566</div>)
+  return (
+  <div>
+    <Input ref={myDiv} onBlur={onBlur}/>
+    <Input type={'password'} clear={true} showEye={true} prepend={prepend} append={append} onChange={onChange}/>
+    {/*<Test2 ref={btn}></Test2>*/}
+    {/*<Button ref={btn}></Button>*/}
+    <div onClick={onClick}>click</div>
+  </div>
   )
 
 };
-App.displayName='testApp'
+App.displayName = 'testApp'
 export default App;
 /*
 export default forwardRef(App)*/

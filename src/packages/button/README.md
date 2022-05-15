@@ -1,7 +1,5 @@
 # Button 按钮
 
-默认情况下输出 a 标签
-
 ### 基础用法
 
 按钮支持 `default`、`primary`、`success`、`warning`、`danger`、`text` 六种类型，默认为 `default`。
