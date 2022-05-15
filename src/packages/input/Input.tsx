@@ -1,4 +1,4 @@
-import React, {forwardRef, useRef, useImperativeHandle, useState, useContext} from 'react'
+import React, {forwardRef, useRef, useImperativeHandle, useState, useContext, useEffect} from 'react'
 import classNames from 'classnames'
 import {prefixCls} from '../prefix'
 import FormContext from '../form/contextForm'
@@ -30,7 +30,7 @@ export interface InputRef {
   getValue: () => void
 }
 
-const Input = forwardRef<InputRef, Props>((props, ref) =>  {
+const Input = forwardRef<InputRef, Props>((props, ref) => {
   const [value, setValue] = useState(props.value)
   const [eyeShow, setEyeShow] = useState(props.showEye)
   const [inputType, setInputType] = useState(props.type)
@@ -77,6 +77,9 @@ const Input = forwardRef<InputRef, Props>((props, ref) =>  {
       setInputType(props.type)
     }
   }
+  useEffect(() => {
+    setValue(props.value)
+  }, [props.value])
   return (
   <div className={classNames(props.className,
   {
@@ -136,7 +139,7 @@ const Input = forwardRef<InputRef, Props>((props, ref) =>  {
 Input.displayName = 'Input'
 Input.defaultProps = {
   value: '',
-  type:'text'
+  type: 'text'
 };
 Input.propTypes = {}
 export default Input
