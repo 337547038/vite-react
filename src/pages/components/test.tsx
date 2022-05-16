@@ -1,4 +1,5 @@
 import {useState} from 'react';
+import Input from "../../packages/input/Input";
 
 interface uploadType {
   name?: string
@@ -18,4 +19,5 @@ function App(props: uploadType) {
 App.defaultProps = {
   disabled: true,
 };
+App.propTypes = {}
 export default App;
