@@ -213,3 +213,4 @@ export default Example
 |----------|-----------|
 | focus    | 获取焦点      |
 | getValue | 获取当前value |
+| clear    | 清空当前输入框的值 |
