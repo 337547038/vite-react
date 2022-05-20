@@ -2,6 +2,7 @@ import React, {forwardRef, useRef, useImperativeHandle, useState, useContext, us
 import classNames from 'classnames'
 import {prefixCls} from '../prefix'
 import FormContext from '../form/contextForm'
+import type {getValueRef} from '../form/types'
 
 interface Props {
   placeholder?: string
@@ -25,9 +26,8 @@ interface Props {
   append?: React.ReactNode | string
 }
 
-export interface InputRef {
+export interface InputRef extends getValueRef {
   focus: () => void
-  getValue: () => void
 }
 
 const Input = forwardRef<InputRef, Props>((props, ref) => {

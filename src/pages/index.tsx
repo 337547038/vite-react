@@ -7,6 +7,8 @@ import {BrowserRouter, Link, useParams, useSearchParams, useLocation} from 'reac
 import {Button} from '@/packages/button';
 import {Input} from '../packages/input';
 import type {InputRef} from '../packages/input';
+import {Radio} from '../packages/radio'
+import {Checkbox} from '../packages/checkbox'
 
 
 /*
@@ -34,7 +36,12 @@ function App() {
     </div>
   );
 }*/
-interface ButtonProps {
+interface B1 {
+  title: string
+  content: string
+}
+
+interface ButtonProps extends B1 {
   name: string
 }
 
@@ -42,34 +49,46 @@ const App: React.FC<ButtonProps> = (props) => {
   const myDiv = useRef<InputRef>(null);
   const btn = useRef();
 
+
   useEffect(() => {
     console.log("this.myDiv.current", myDiv);
     // console.log("this.btn.current", btn);
   })
   const onClick = () => {
-    console.log(myDiv.current?.getValue())
-    myDiv.current?.focus()
+    /*console.log(myDiv.current?.getValue())
+    myDiv.current?.focus()*/
   }
   const onChange = (val: string, evt: React.ChangeEvent) => {
-    console.log(val)
-    console.log(evt)
+    /*console.log(val)
+    console.log(evt)*/
+
   }
   const onBlur = (val: string, evt: React.ChangeEvent) => {
     console.log(val)
     console.log(evt)
   }
-  let value = '45'
-  const prepend = '123'
-  const append = (<div>4566</div>)
+  const [checkedList, setCheckedList] = useState(['1', '3'])
+  const checkboxAll = () => {
+    setCheckedList(['1', '2', '3', '4', '5'])
+  }
+  const checkboxNone = () => {
+    setCheckedList([])
+  }
+  const onChange2 = (val) => {
+    console.log(val)
+  }
   return (
-  <div>
-    <Input ref={myDiv} onBlur={onBlur}/>
-    <Input type={'password'} clear={true} showEye={true} prepend={prepend} append={append} onChange={onChange}/>
-    {/*<Test2 ref={btn}></Test2>*/}
-    {/*<Button ref={btn}></Button>*/}
-    <div onClick={onClick}>click</div>
-  </div>
-  )
+  <div className="docs-demo">
+    <Checkbox value={'1'} checked={checkedList} onChange={onChange2}>选项1</Checkbox>
+    <Checkbox value={'2'} checked={checkedList}>选项2</Checkbox>
+    <Checkbox value={'3'} checked={checkedList}>选项3</Checkbox>
+    <Checkbox value={'4'} checked={checkedList}>选项4</Checkbox>
+    <Checkbox value={'5'} checked={checkedList}>选项5</Checkbox>
+    <p>
+      <Button onClick={checkboxAll}>全选</Button>
+      <Button onClick={checkboxNone}>全不选</Button>
+    </p>
+  </div>)
 
 };
 App.displayName = 'testApp'

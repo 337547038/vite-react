@@ -211,5 +211,5 @@ export default Example
 
 | 参数       | 说明        |
 |----------|-----------|
-| focus    | 获取焦点      |
+| focus    | 设置焦点      |
 | getValue | 获取当前value |
