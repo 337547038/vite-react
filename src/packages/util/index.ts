@@ -12,3 +12,15 @@ export function debounce(fn: any, delay = 500) {
     }, delay)
   }
 }
+
+// 根据key从obj删除指定key
+export function omit(obj: any, delKey: string[]) {
+  const newObj = JSON.parse(JSON.stringify(obj))
+  Object.keys(newObj).forEach(key => {
+    // console.log(key)
+    if (delKey.includes(key)) {
+      delete newObj[key]
+    }
+  })
+  return newObj
+}

@@ -1,6 +1,6 @@
 # SelectDown下拉
 
-统一下拉组件，为`select`,`datePick`,`cascader`等提交统一交互
+统一下拉组件，为`select`,`datePick`,`cascader`等提供统一交互
 
 ### 基础用法
 

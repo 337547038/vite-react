@@ -1,2 +1,4 @@
 import SelectDown from './SelectDown'
-export { SelectDown }
+import type {Props as SelectProps, SelectDownRef} from './SelectDown'
+
+export {SelectDown, SelectProps, SelectDownRef}

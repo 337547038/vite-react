@@ -12,6 +12,7 @@ import {Input} from '../packages/input';
 import type {InputRef} from '../packages/input';
 import {Tag} from '../packages/tag'
 import {SelectDown} from '../packages/selectDown'
+import {Select} from '../packages/select'
 
 
 /*
@@ -69,21 +70,22 @@ const App: React.FC<ButtonProps> = (props) => {
       console.log('settimeout')
     }, 5000)*/
   const el = useRef(null)
+  const options = [
+    {label: '选项1', value: 1},
+    {label: '选项2', value: '2'},
+    {label: '选项3', value: '3'},
+    {label: '选项4', value: '4', disabled: true},
+    {label: '选项5', value: '5'},
+    {label: '6'},
+    {label: '选项7', value: '7'},
+    {label: '选项8', value: '8'},
+    {label: '选项9', value: '9'},
+    {label: '选项10', value: '10', class: 'red'}
+  ]
   return (
     /*<div><Test3></Test3></div>*/
     <div>
-      <SelectDown
-        placeholder="placeholder"
-        defaultValue={value}
-        downStyle={{width: '100px'}}
-        appendToBody={true}
-        filterable
-        clear={true}
-        onChange={onChange}
-        ref={el}>
-        <p onClick={onClick2}>21311</p>
-        <p>基础用法</p>
-      </SelectDown>
+      <Select defaultValue="value1" placeholder="请选择" options={options}/>
       <Button onClick={onClick}>1</Button>
       <Button onClick={onClick2}>2</Button>
     </div>

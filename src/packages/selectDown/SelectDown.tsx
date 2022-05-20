@@ -14,13 +14,12 @@ import {Tag} from '../tag'
 import {getOffset, getWindow} from '../util/dom'
 import ReactDOM from 'react-dom';
 
-
 export interface SelectDownRef {
   getValue: () => void
   clearValue: () => void
 }
 
-interface Props {
+export interface Props {
   defaultValue?: string[]
   width?: string
   multiple?: boolean
@@ -37,15 +36,15 @@ interface Props {
   downHeight?: number // 显示下拉最大高度，超出显示滚动条
   icon?: string
   fixedIcon?: boolean
-  isRange?: boolean // 区间选择，此时multiple无效
-  rangeSeparator?: string
-  endPlaceholder?: string // isRange时第二个输入框
   children?: React.ReactNode
   toggleClick?: (val: boolean, evt?: React.MouseEvent<HTMLDivElement> | MouseEvent) => void
   onChange?: (val: string | string[], evt?: MouseEvent | React.ChangeEvent) => void
   onFocus?: (val: string | string[], evt: MouseEvent | React.ChangeEvent) => void
   onBlur?: (val: string | string[], evt: MouseEvent | React.ChangeEvent) => void
   onDelete?: (index: number) => void
+  isRange?: boolean // 区间选择，此时multiple无效
+  rangeSeparator?: string // isRange时分隔符
+  endPlaceholder?: string // isRange时第二个输入框
 }
 
 const SelectDown = forwardRef<SelectDownRef, Props>((props, ref) => {
