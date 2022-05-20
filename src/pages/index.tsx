@@ -1,6 +1,9 @@
 import React, {useState, useEffect, useContext, useRef, createRef} from 'react';
 import Test from "./components/test";
 import Test2 from "./components/test2";
+import Test3 from "./components/test3";
+import Q1 from "./components/q1";
+import Q2 from "./components/q2";
 import {BrowserRouter, Link, useParams, useSearchParams, useLocation} from 'react-router-dom';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -9,6 +12,9 @@ import {Input} from '../packages/input';
 import type {InputRef} from '../packages/input';
 import {Radio} from '../packages/radio'
 import {Checkbox} from '../packages/checkbox'
+import {Tag} from '../packages/tag'
+import {SelectDown} from '../packages/selectDown'
+import {Select} from '../packages/select'
 
 
 /*
@@ -36,36 +42,15 @@ function App() {
     </div>
   );
 }*/
-interface B1 {
-  title: string
-  content: string
-}
-
-interface ButtonProps extends B1 {
+interface ButtonProps {
   name: string
+  children?: React.ReactNode
 }
 
 const App: React.FC<ButtonProps> = (props) => {
   const myDiv = useRef<InputRef>(null);
   const btn = useRef();
-
-
-  useEffect(() => {
-    console.log("this.myDiv.current", myDiv);
-    // console.log("this.btn.current", btn);
-  })
-  const onClick = () => {
-    /*console.log(myDiv.current?.getValue())
-    myDiv.current?.focus()*/
-  }
-  const onChange = (val: string, evt: React.ChangeEvent) => {
-    /*console.log(val)
-    console.log(evt)*/
-
-  }
-  const onBlur = (val: string, evt: React.ChangeEvent) => {
-    console.log(val)
-    console.log(evt)
+  const onChange = () => {
   }
   const [checkedList, setCheckedList] = useState(['1', '3'])
   const checkboxAll = () => {
@@ -77,6 +62,34 @@ const App: React.FC<ButtonProps> = (props) => {
   const onChange2 = (val) => {
     console.log(val)
   }
+
+  // const list = ['a一', 'a二', 'a三']
+  const [list, setList] = useState(['a一', 'a二', 'a三'])
+  const [visible, setVisible] = useState(false)
+  const onClick = () => {
+
+  }
+  const onClick2 = () => {
+    console.log(visible)
+  }
+  const [value, setValue] = useState(['react', 'vue'])
+  /*  setTimeout(() => {
+      setValue(['abc'])
+      console.log('settimeout')
+    }, 5000)*/
+  const el = useRef(null)
+  const options = [
+    {label: '选项1', value: 1},
+    {label: '选项2', value: '2'},
+    {label: '选项3', value: '3'},
+    {label: '选项4', value: '4', disabled: true},
+    {label: '选项5', value: '5'},
+    {label: '6'},
+    {label: '选项7', value: '7'},
+    {label: '选项8', value: '8'},
+    {label: '选项9', value: '9'},
+    {label: '选项10', value: '10', class: 'red'}
+  ]
   return (
   <div className="docs-demo">
     <Checkbox value={'1'} checked={checkedList} onChange={onChange2}>选项1</Checkbox>
@@ -89,6 +102,13 @@ const App: React.FC<ButtonProps> = (props) => {
       <Button onClick={checkboxNone}>全不选</Button>
     </p>
   </div>)
+
+    /*<div><Test3></Test3></div>*/
+   /* <div>
+      <Select defaultValue="value1" placeholder="请选择" options={options}/>
+      <Button onClick={onClick}>1</Button>
+      <Button onClick={onClick2}>2</Button>
+    </div>*/
 
 };
 App.displayName = 'testApp'

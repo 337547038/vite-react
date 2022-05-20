@@ -6,7 +6,7 @@ import type {getValueRef} from '../form/types'
 
 interface Props {
   placeholder?: string
-  value?: string
+  defaultValue?: string
   disabled?: boolean
   type?: string
   clear?: boolean
@@ -28,10 +28,11 @@ interface Props {
 
 export interface InputRef extends getValueRef {
   focus: () => void
+  clear: () => void // 用于清空输入框的值
 }
 
 const Input = forwardRef<InputRef, Props>((props, ref) => {
-  const [value, setValue] = useState(props.value)
+  const [value, setValue] = useState(props.defaultValue)
   const [eyeShow, setEyeShow] = useState(props.showEye)
   const [inputType, setInputType] = useState(props.type)
   const inputEl = useRef<{ focus: () => void }>(null)
@@ -43,8 +44,11 @@ const Input = forwardRef<InputRef, Props>((props, ref) => {
   const focus = () => {
     inputEl.current?.focus()
   }
+  const clear = () => {
+    setValue('')
+  }
   // 将子组件方法暴露给父组件
-  useImperativeHandle(ref, () => ({getValue, focus}))
+  useImperativeHandle(ref, () => ({getValue, focus,clear}))
   const contextForm = useContext(FormContext)
   let disabled = props.disabled
   if (contextForm.disabled) {
@@ -78,67 +82,67 @@ const Input = forwardRef<InputRef, Props>((props, ref) => {
     }
   }
   useEffect(() => {
-    setValue(props.value)
-  }, [props.value])
+    setValue(props.defaultValue)
+  }, [props.defaultValue])
   return (
-  <div className={classNames(props.className,
-  {
-    [prefixCls + '-form-input']: true,
-    'input-prepend': props.prepend,
-    'input-append': props.append
-  })}
-       style={{width: props.width}}>
-    {props.prepend ?
-    <div className="prepend">
-      {props.prepend}
-    </div> : ''
-    }
-    <input
-    ref={inputEl as React.Ref<HTMLInputElement>}
-    placeholder={props.placeholder}
-    autoComplete="off"
-    value={value}
-    type={inputType}
-    name={props.name}
-    maxLength={props.maxLength}
-    readOnly={props.readOnly}
-    className={classNames({
-      disabled: disabled,
-      [prefixCls + '-input-control']: true,
-      'has-prefix': props.prefixIcon,
-      [props.size as string]: props.size
-    })
-    }
-    onChange={onChange}
-    onBlur={onBlur}
-    onFocus={onFocus}
-    disabled={disabled}/>
-    {props.append ?
-    <div className="append">
-      {props.append}
-    </div> : ''
-    }
-    {props.prefixIcon ?
-    <span className="prefix-icon">
-      <i className={props.prefixIcon}></i>
+    <div className={classNames(props.className,
+      {
+        [prefixCls + '-form-input']: true,
+        'input-prepend': props.prepend,
+        'input-append': props.append
+      })}
+         style={{width: props.width}}>
+      {props.prepend ?
+        <div className="prepend">
+          {props.prepend}
+        </div> : ''
+      }
+      <input
+        ref={inputEl as React.Ref<HTMLInputElement>}
+        placeholder={props.placeholder}
+        autoComplete="off"
+        value={value}
+        type={inputType}
+        name={props.name}
+        maxLength={props.maxLength}
+        readOnly={props.readOnly}
+        className={classNames({
+          disabled: disabled,
+          [prefixCls + '-input-control']: true,
+          'has-prefix': props.prefixIcon,
+          [props.size as string]: props.size
+        })
+        }
+        onChange={onChange}
+        onBlur={onBlur}
+        onFocus={onFocus}
+        disabled={disabled} />
+      {props.append ?
+        <div className="append">
+          {props.append}
+        </div> : ''
+      }
+      {props.prefixIcon ?
+        <span className="prefix-icon">
+      <i className={props.prefixIcon}/>
     </span> : ''
-    }
-    <span className="suffix-icon">
+      }
+      <span className="suffix-icon">
       {props.suffixIcon ?
-      <i className={props.suffixIcon}/>
-      : ''}
-      {props.clear && value ?
-      <i className="icon-close" onClick={clearValue}/> : ''}
-      {props.showEye && value && props.type === 'password' ?
-      <i className={classNames({'icon-eye-close': eyeShow, 'icon-eye': !eyeShow})}
-         onClick={showEyeClick}/> : ''}
+        <i className={props.suffixIcon} />
+        : ''}
+        {props.clear && value ?
+          <i className="icon-close" onClick={clearValue} /> : ''}
+        {props.showEye && value && props.type === 'password' ?
+          <i className={classNames({'icon-eye-close': eyeShow, 'icon-eye': !eyeShow})}
+             onClick={showEyeClick} /> : ''}
     </span>
-  </div>
+    </div>
   )
 })
 Input.displayName = 'Input'
 Input.defaultProps = {
-  value: '',
+  defaultValue: '',
   type: 'text'
 };
 Input.propTypes = {}

@@ -9,7 +9,7 @@ function Example() {
   return (<div className="demo-input">
     <div><Input/></div>
     <div><Input placeholder="请输入内容"/></div>
-    <div><Input placeholder="请输入内容" value={'defaultValue'}/></div>
+    <div><Input placeholder="请输入内容" defaultValue={'defaultValue'}/></div>
     <span><Input placeholder="禁用状态" disabled={true}/></span>
   </div>)
 }
@@ -29,7 +29,7 @@ function Example() {
   return (<div>
     <Input
     placeholder="试着输入些什么看看"
-    value="valueClear"
+    defaultValue="valueClear"
     clear={true}
     />
   </div>)
@@ -50,7 +50,7 @@ function Example() {
   return (<div>
     <Input
     placeholder="试着输入些什么看看"
-    value="valueClear"
+    defaultValue="valueClear"
     showEye={true}
     type="password"
     />
@@ -172,7 +172,7 @@ function Example() {
     console.log('当前值：' + inputEl.current?.getValue())
   }
   return (<div className="demo-input">
-    <div>当前输入框的值:{value}<br/><Input placeholder="onChange event" value={value} onChange={onChange}/></div>
+    <div>当前输入框的值:{value}<br/><Input placeholder="onChange event" defaultValue={value} onChange={onChange}/></div>
     <div><Input placeholder="onFocus" onFocus={onFocus}/></div>
     <div><Input placeholder="onBlur" onBlur={onBlur}/></div>
     <div><Input placeholder="获取值/焦点事件" ref={inputEl}/><Button type="primary" onClick={btnClick}>获取焦点</Button></div>
@@ -187,25 +187,25 @@ export default Example
 
 ### Input Props
 
-| 参数          | 类型                | 说明                  |
-|-------------|-------------------|---------------------|
-| value       | any               | 输入框的值               |
-| placeholder | string            | 输入框点位符              |
-| disabled    | boolean/false     | 禁用状态                |
-| disabled    | boolean/false     | 禁用状态                |
-| readOnly    | boolean/false     | 只读状态                |
-| readOnly    | boolean/false     | 只读状态                |
-| maxLength   | number            | 输入最大长度              |
-| type        | string            | 文本框类型，默认text        |
-| width       | string            | 设置宽度属性              |
-| size        | string            | 支持 `large`、`normal`、`small`、`mini` 四种尺寸，默认为 `normal` |
-| prefixIcon  | string            | 前缀icon图标            |
-| suffixIcon  | string            | 后缀icon图标            |
-| prepend     | string/ReactNode  | 前缀                  |
-| append      | string/ReactNode  | 后缀                  |
-| onChange      | function(value,e) | 输入框内容变化时的回调         |
-| onFocus      | function(value,e) | 获取焦点事件              |
-| onBlur      | function(value,e) | 失去焦点事件              |
+| 参数          | 类型           | 说明                 |
+|-------------|--------------|--------------------|
+| defaultValue  | string       | 默认初始输入框的值          |
+| placeholder | string       | 输入框点位符             |
+| disabled    | boolean/false | 禁用状态               |
+| disabled    | boolean/false | 禁用状态               |
+| readOnly    | boolean/false | 只读状态               |
+| readOnly    | boolean/false | 只读状态               |
+| maxLength   | number       | 输入最大长度             |
+| type        | string       | 文本框类型，默认text       |
+| width       | string       | 设置宽度属性             |
+| size        | string       | 支持 `large`、`normal`、`small`、`mini` 四种尺寸，默认为 `normal` |
+| prefixIcon  | string       | 前缀icon图标           |
+| suffixIcon  | string       | 后缀icon图标           |
+| prepend     | string/ReactNode | 前缀                 |
+| append      | string/ReactNode | 后缀                 |
+| onChange      | function(value,e) | 输入框内容变化时的回调        |
+| onFocus      | function(value,e) | 获取焦点事件             |
+| onBlur      | function(value,e) | 失去焦点事件             |
 
 ### Input Methods
 
@@ -213,3 +213,4 @@ export default Example
 |----------|-----------|
 | focus    | 设置焦点      |
 | getValue | 获取当前value |
+| clear    | 清空当前输入框的值 |
