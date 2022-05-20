@@ -1,12 +1,17 @@
 import React, {useState, useEffect, useContext, useRef, createRef} from 'react';
 import Test from "./components/test";
 import Test2 from "./components/test2";
+import Test3 from "./components/test3";
+import Q1 from "./components/q1";
+import Q2 from "./components/q2";
 import {BrowserRouter, Link, useParams, useSearchParams, useLocation} from 'react-router-dom';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import {Button} from '@/packages/button';
 import {Input} from '../packages/input';
 import type {InputRef} from '../packages/input';
+import {Tag} from '../packages/tag'
+import {SelectDown} from '../packages/selectDown'
 
 
 /*
@@ -36,43 +41,56 @@ function App() {
 }*/
 interface ButtonProps {
   name: string
+  children?: React.ReactNode
 }
 
 const App: React.FC<ButtonProps> = (props) => {
   const myDiv = useRef<InputRef>(null);
   const btn = useRef();
-
-  useEffect(() => {
-    console.log("this.myDiv.current", myDiv);
-    // console.log("this.btn.current", btn);
-  })
-  const onClick = () => {
-    console.log(myDiv.current?.getValue())
-    myDiv.current?.focus()
-  }
-  const onChange = (val: string, evt: React.ChangeEvent) => {
-    console.log(val)
-    console.log(evt)
+  const onChange = () => {
   }
   const onBlur = (val: string, evt: React.ChangeEvent) => {
     console.log(val)
     console.log(evt)
   }
-  let value = '45'
-  const prepend = '123'
-  const append = (<div>4566</div>)
-  return (
-  <div>
-    <Input ref={myDiv} onBlur={onBlur}/>
-    <Input type={'password'} clear={true} showEye={true} prepend={prepend} append={append} onChange={onChange}/>
-    {/*<Test2 ref={btn}></Test2>*/}
-    {/*<Button ref={btn}></Button>*/}
-    <div onClick={onClick}>click</div>
-  </div>
-  )
 
+  // const list = ['a一', 'a二', 'a三']
+  const [list, setList] = useState(['a一', 'a二', 'a三'])
+  const [visible, setVisible] = useState(false)
+  const onClick = () => {
+
+  }
+  const onClick2 = () => {
+    console.log(visible)
+  }
+  const [value, setValue] = useState(['react', 'vue'])
+  /*  setTimeout(() => {
+      setValue(['abc'])
+      console.log('settimeout')
+    }, 5000)*/
+  const el = useRef(null)
+  return (
+    /*<div><Test3></Test3></div>*/
+    <div>
+      <SelectDown
+        placeholder="placeholder"
+        defaultValue={value}
+        downStyle={{width: '100px'}}
+        appendToBody={true}
+        filterable
+        clear={true}
+        onChange={onChange}
+        ref={el}>
+        <p onClick={onClick2}>21311</p>
+        <p>基础用法</p>
+      </SelectDown>
+      <Button onClick={onClick}>1</Button>
+      <Button onClick={onClick2}>2</Button>
+    </div>
+  )
 };
 App.displayName = 'testApp'
 export default App;
+//export default React.memo(App);
 /*
 export default forwardRef(App)*/

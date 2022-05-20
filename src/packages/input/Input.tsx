@@ -5,7 +5,7 @@ import FormContext from '../form/contextForm'
 
 interface Props {
   placeholder?: string
-  value?: string
+  defaultValue?: string
   disabled?: boolean
   type?: string
   clear?: boolean
@@ -32,7 +32,7 @@ export interface InputRef {
 }
 
 const Input = forwardRef<InputRef, Props>((props, ref) => {
-  const [value, setValue] = useState(props.value)
+  const [value, setValue] = useState(props.defaultValue)
   const [eyeShow, setEyeShow] = useState(props.showEye)
   const [inputType, setInputType] = useState(props.type)
   const inputEl = useRef<{ focus: () => void }>(null)
@@ -82,8 +82,8 @@ const Input = forwardRef<InputRef, Props>((props, ref) => {
     }
   }
   useEffect(() => {
-    setValue(props.value)
-  }, [props.value])
+    setValue(props.defaultValue)
+  }, [props.defaultValue])
   return (
     <div className={classNames(props.className,
       {
@@ -142,7 +142,7 @@ const Input = forwardRef<InputRef, Props>((props, ref) => {
 })
 Input.displayName = 'Input'
 Input.defaultProps = {
-  value: '',
+  defaultValue: '',
   type: 'text'
 };
 Input.propTypes = {}
