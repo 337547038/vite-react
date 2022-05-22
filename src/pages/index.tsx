@@ -1,47 +1,18 @@
 import React, {useState, useEffect, useContext, useRef, createRef} from 'react';
 import Test from "./components/test";
-import Test2 from "./components/test2";
-import Test3 from "./components/test3";
 import Q1 from "./components/q1";
 import Q2 from "./components/q2";
 import {BrowserRouter, Link, useParams, useSearchParams, useLocation} from 'react-router-dom';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import {Button} from '@/packages/button';
+import {Button} from '../packages/button';
 import {Input} from '../packages/input';
 import type {InputRef} from '../packages/input';
 import {Radio} from '../packages/radio'
-import {Checkbox} from '../packages/checkbox'
+import {Checkbox, CheckboxGroup} from '../packages/checkbox'
+import type {CheckboxGroupRef} from "../packages/checkbox/Group";
 import {Tag} from '../packages/tag'
 import {SelectDown} from '../packages/selectDown'
 import {Select} from '../packages/select'
 
-
-/*
-function App() {
-  const params = useParams(); // 获取动态路由的值
-  const [searchParams, setSearchParams] = useSearchParams(); // 获取查询字符串的值
-  const location = useLocation(); // 获取上一个页面传递进来的 state 参数
-  const [count, setCount] = useState(0);
-  const [disabled, setDisabled] = useState(false);
-  useEffect(() => {
-    console.log('10');
-    // Update the document title using the browser API
-    document.title = `You clicked times`;
-  });
-  const onClick = () => {
-    console.log('onClick');
-    setDisabled(true);
-  };
-  //const ThemeContext = React.createContext('light');
-  // ThemeContext.displayName = 'displayName'
-  const btnRef=useRef(null)
-  return (
-    <div>
-        <Button ref={btnRef} onClick={onClick}>默认按钮</Button>
-    </div>
-  );
-}*/
 interface ButtonProps {
   name: string
   children?: React.ReactNode
@@ -49,69 +20,57 @@ interface ButtonProps {
 
 const App: React.FC<ButtonProps> = (props) => {
   const myDiv = useRef<InputRef>(null);
-  const btn = useRef();
-  const onChange = () => {
+  const refEl = useRef<CheckboxGroupRef>(null);
+  const [defaultValue, setDefaultValue] = useState(['a3'])
+  const [options, setOptions] = useState([])
+  const [disabled, setDisabled] = useState(false)
+  const [value, setValue] = useState('3')
+  const onClick = () => {
+    // 模拟加载完成后设置数据
+    //console.log('模拟加载完成后设置数据')
+    //setDefaultValue(['a5', 'a1', 'a3'])
+    //setOptions([...option])
+    //setDisabled(true)
+    setValue('5')
   }
-  const [checkedList, setCheckedList] = useState(['1', '3'])
-  const checkboxAll = () => {
-    setCheckedList(['1', '2', '3', '4', '5'])
-  }
-  const checkboxNone = () => {
-    setCheckedList([])
-  }
-  const onChange2 = (val) => {
+
+  const onChange = (val: string[]) => {
     console.log(val)
   }
-
-  // const list = ['a一', 'a二', 'a三']
-  const [list, setList] = useState(['a一', 'a二', 'a三'])
-  const [visible, setVisible] = useState(false)
-  const onClick = () => {
-
+  const getValue = () => {
+    console.log(refEl.current?.getValue())
   }
-  const onClick2 = () => {
-    console.log(visible)
+  const toggleSelect = (val: boolean) => {
+    refEl.current?.toggleSelect(val)
   }
-  const [value, setValue] = useState(['react', 'vue'])
-  /*  setTimeout(() => {
-      setValue(['abc'])
-      console.log('settimeout')
-    }, 5000)*/
-  const el = useRef(null)
-  const options = [
+  const option = [
     {label: '选项1', value: 1},
     {label: '选项2', value: '2'},
     {label: '选项3', value: '3'},
     {label: '选项4', value: '4', disabled: true},
     {label: '选项5', value: '5'},
     {label: '6'},
-    {label: '选项7', value: '7'},
-    {label: '选项8', value: '8'},
+    {label: '选项7', value: '77'},
+    {label: '选项8', value: '88'},
     {label: '选项9', value: '9'},
     {label: '选项10', value: '10', class: 'red'}
   ]
   return (
   <div className="docs-demo">
-    <Checkbox value={'1'} checked={checkedList} onChange={onChange2}>选项1</Checkbox>
-    <Checkbox value={'2'} checked={checkedList}>选项2</Checkbox>
-    <Checkbox value={'3'} checked={checkedList}>选项3</Checkbox>
-    <Checkbox value={'4'} checked={checkedList}>选项4</Checkbox>
-    <Checkbox value={'5'} checked={checkedList}>选项5</Checkbox>
-    <p>
-      <Button onClick={checkboxAll}>全选</Button>
-      <Button onClick={checkboxNone}>全不选</Button>
-    </p>
-  </div>)
+    <Q1></Q1>
+    <Select defaultValue={value} placeholder="请选择" options={options}/>
 
-    /*<div><Test3></Test3></div>*/
-   /* <div>
-      <Select defaultValue="value1" placeholder="请选择" options={options}/>
-      <Button onClick={onClick}>1</Button>
-      <Button onClick={onClick2}>2</Button>
-    </div>*/
+
+    <p><Button onClick={onClick}>模拟数据变化</Button></p>
+  </div>)
 
 };
 App.displayName = 'testApp'
 export default App;
+
 /*
 export default forwardRef(App)*/
+
+
+
+

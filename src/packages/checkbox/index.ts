@@ -3,6 +3,7 @@
  */
 import Checkbox from './Checkbox'
 import CheckboxGroup from './Group'
-import type {getValueRef as CheckboxRef, getValueRef as CheckboxGroupRef} from '../form/types'
+import type {CheckboxGroupRef} from './Group'
+import type {getValueRef as CheckboxRef} from '../form/types'
 
 export {Checkbox, CheckboxGroup, CheckboxRef, CheckboxGroupRef}

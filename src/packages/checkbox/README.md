@@ -8,12 +8,15 @@
 import {Checkbox} from './index'
 
 function Example() {
+  const onChange = (val: boolean | string) => {
+    console.log(val)
+  }
   return (
   <div>
-    <Checkbox checked={true}>选项1</Checkbox>
-    <Checkbox checked={false}>选项2</Checkbox>
-    <Checkbox checked={true} value={'3'}>选项3</Checkbox>
-    <Checkbox checked={false} value={"4"}>选项4</Checkbox>
+    <Checkbox checked={true} onChange={onChange}>选项1</Checkbox>
+    <Checkbox checked={false} onChange={onChange}>选项2</Checkbox>
+    <Checkbox checked={true} value={'3'} onChange={onChange}>选项3</Checkbox>
+    <Checkbox checked={false} value={"4"} onChange={onChange}>选项4</Checkbox>
   </div>)
 }
 
@@ -85,7 +88,7 @@ function Example() {
   ]
   return (
   <div>
-    <CheckboxGroup value={['a6']} options={groupData} min="2" max="4"/>
+    <CheckboxGroup defaultValue={['a6']} options={groupData} min={2} max={4}/>
   </div>)
 }
 
@@ -97,7 +100,9 @@ export default Example
 `toggleSelect(true/false)全选或取消全选`，可使用 `getValue` 取方法取得已勾选的项集合
 
 ```jsx
+import {useRef} from 'react'
 import {CheckboxGroup} from './index'
+import type {CheckboxGroupRef} from './index'
 import {Button} from '../button'
 
 function Example() {
@@ -109,14 +114,16 @@ function Example() {
     {label: '禁用', value: 'a5', disabled: true},
     {label: '勾选禁用', value: 'a6', disabled: true}
   ]
-  const toggleSelect = (boolean: boolean) => {
-
+  const refEl = useRef < CheckboxGroupRef > (null);
+  const toggleSelect = (val: boolean) => {
+    refEl.current?.toggleSelect(val)
   }
   const getValue = () => {
+    console.log(refEl.current?.getValue())
   }
   return (
   <div>
-    <CheckboxGroup value={['a6']} options={groupData}/>
+    <CheckboxGroup defaultValue={['a6']} options={groupData} ref={refEl}/>
     <p>
       <Button onClick={() => toggleSelect(true)}>全选</Button>
       <Button onClick={() => toggleSelect(false)}>全不选</Button>

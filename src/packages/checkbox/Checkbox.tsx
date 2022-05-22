@@ -37,11 +37,11 @@ const Checkbox = forwardRef<getValueRef, Props>((props, ref) => {
   }
   const [checked, setChecked] = useState<boolean>(getDefaultChecked())
   useEffect(() => {
-    console.log('ok')
+    //console.log('ok')
     setChecked(getDefaultChecked())
   }, [props.checked])
   const changeHandler = () => {
-    if (props.beforeChange && !props.beforeChange()) {
+    if ((props.beforeChange && !props.beforeChange()) || disabled) {
       return
     }
     setChecked(!checked)

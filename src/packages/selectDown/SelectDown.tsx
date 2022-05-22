@@ -12,11 +12,12 @@ import {prefixCls} from '../prefix'
 import FormContext from '../form/contextForm'
 import {Tag} from '../tag'
 import {getOffset, getWindow} from '../util/dom'
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom'
+import type {getValueRef} from '../form/types'
 
-export interface SelectDownRef {
-  getValue: () => void
-  clearValue: () => void
+export interface SelectDownRef extends getValueRef {
+  clearValue: () => void // 清空输入框的值
+  slideUp: () => void
 }
 
 export interface Props {
@@ -36,11 +37,12 @@ export interface Props {
   downHeight?: number // 显示下拉最大高度，超出显示滚动条
   icon?: string
   fixedIcon?: boolean
+  className?: string
   children?: React.ReactNode
   toggleClick?: (val: boolean, evt?: React.MouseEvent<HTMLDivElement> | MouseEvent) => void
-  onChange?: (val: string | string[], evt?: MouseEvent | React.ChangeEvent) => void
-  onFocus?: (val: string | string[], evt: MouseEvent | React.ChangeEvent) => void
-  onBlur?: (val: string | string[], evt: MouseEvent | React.ChangeEvent) => void
+  onInput?: (activeVal: string, value: string[], evt?: MouseEvent | React.ChangeEvent) => void
+  onFocus?: (activeVal: string, value: string[], evt: MouseEvent | React.ChangeEvent) => void
+  onBlur?: (activeVal: string, value: string[], evt: MouseEvent | React.ChangeEvent) => void
   onDelete?: (index: number) => void
   isRange?: boolean // 区间选择，此时multiple无效
   rangeSeparator?: string // isRange时分隔符
@@ -92,7 +94,7 @@ const SelectDown = forwardRef<SelectDownRef, Props>((props, ref) => {
       setDirection2(props.direction)
       // 计算弹出方向
       const wh =
-        document.documentElement.clientHeight || document.body.clientHeight
+      document.documentElement.clientHeight || document.body.clientHeight
       const clientY = evt.clientY // 当鼠标事件发生时，鼠标相对于浏览器（这里说的是浏览器的有效区域）y轴的位置；
       // 最大下拉高度
       let downMaxHeight = props.downHeight || downEl.current?.offsetHeight || 0
@@ -142,8 +144,8 @@ const SelectDown = forwardRef<SelectDownRef, Props>((props, ref) => {
   }
   const slideUp = (evt?: React.MouseEvent<HTMLDivElement> | MouseEvent) => {
     if (visible.current && !stopPropagation.current) {
-      // 当前为展开状态
-      props.toggleClick && props.toggleClick(false, evt)
+      // 当前为展开状态，slideUp方法收起时，不回调事件
+      evt && props.toggleClick && props.toggleClick(false, evt)
       const display = {display: 'none'}
       setDownPanelStyle({...downPanelStyle, ...display})
       visible.current = false
@@ -162,7 +164,7 @@ const SelectDown = forwardRef<SelectDownRef, Props>((props, ref) => {
       value[1] = val
       setValue([...value])
     }
-    mouseEvent(evt, 'onChange')
+    mouseEvent(evt, 'onInput')
   }
   const inputFocus = (evt: MouseEvent | React.ChangeEvent) => {
     mouseEvent(evt, 'onFocus')
@@ -172,13 +174,13 @@ const SelectDown = forwardRef<SelectDownRef, Props>((props, ref) => {
   }
   const mouseEvent = (evt: MouseEvent | React.ChangeEvent, type: string) => {
     if (props.filterable) {
-      let val: string | string[] = (evt.target as HTMLInputElement).value
-      if (props.isRange) {
+      let val: string = (evt.target as HTMLInputElement).value
+      /*if (props.isRange) {
         val = value
-      }
+      }*/
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      props[type] && props[type](val, evt)
+      props[type] && props[type](val, value, evt)
     }
   }
   const deleteText = (index: number, evt: React.MouseEvent<HTMLDivElement>) => {
@@ -191,7 +193,7 @@ const SelectDown = forwardRef<SelectDownRef, Props>((props, ref) => {
   const clearClick = (evt: React.MouseEvent<HTMLDivElement>) => {
     setValue([])
     clearValue()
-    props.onChange && props.onChange([])
+    props.onInput && props.onInput('', [])
     evt.stopPropagation()
   }
   const downPaneClick = (evt: React.MouseEvent<HTMLDivElement>) => {
@@ -202,7 +204,7 @@ const SelectDown = forwardRef<SelectDownRef, Props>((props, ref) => {
     return () => {
       document.removeEventListener('click', slideUp, false)
     }
-  }, [])
+  }, [downPanelStyle]) // 这里反复添加总感觉不是很理想，不添加在slideUp以内部的toggleClick方法里又获取不到最新的useState
 
   const getValue = () => {
     return value
@@ -220,125 +222,125 @@ const SelectDown = forwardRef<SelectDownRef, Props>((props, ref) => {
       }
     }
   }
-  useImperativeHandle(ref, () => ({getValue, clearValue}))
+  useImperativeHandle(ref, () => ({getValue, clearValue, slideUp}))
   const inputCls = {
     [`${prefixCls}-input-control`]: true,
     [props.size as string]: props.size,
     disabled: disabled
   }
   const isRangeHtml = (
-    <div className={classNames('select-range', inputCls)}>
-      <input
-        ref={inputStart}
-        key="start"
-        value={value[0]}
-        readOnly={!props.filterable}
-        placeholder={props.placeholder}
-        disabled={disabled}
-        onChange={inputInput.bind(this, 'start')}
-        onFocus={inputFocus}
-        onBlur={inputBlur}
-      />
-      <span>{props.rangeSeparator}</span>
-      <input
-        ref={endStart}
-        key="end"
-        value={value[1]}
-        readOnly={!props.filterable}
-        placeholder={props.endPlaceholder}
-        disabled={disabled}
-        onChange={inputInput.bind(this, 'end')}
-        onFocus={inputFocus}
-        onBlur={inputBlur}
-      />
-    </div>)
+  <div className={classNames('select-range', inputCls)}>
+    <input
+    ref={inputStart}
+    key="start"
+    value={value[0]}
+    readOnly={!props.filterable}
+    placeholder={props.placeholder}
+    disabled={disabled}
+    onChange={inputInput.bind(this, 'start')}
+    onFocus={inputFocus}
+    onBlur={inputBlur}
+    />
+    <span>{props.rangeSeparator}</span>
+    <input
+    ref={endStart}
+    key="end"
+    value={value[1]}
+    readOnly={!props.filterable}
+    placeholder={props.endPlaceholder}
+    disabled={disabled}
+    onChange={inputInput.bind(this, 'end')}
+    onFocus={inputFocus}
+    onBlur={inputBlur}
+    />
+  </div>)
   const isMultipleHtml = (
-    <div className={classNames('multiple-text', inputCls)}>
-      <ul placeholder={props.placeholder}>
-        {props.collapseTags ?
-          <Fragment>
-            {value?.length > 0 ?
-              <li>
-                <span>{value[0]}</span>
-                <i className="icon-error" onClick={deleteText.bind(this, 0)} />
-              </li> : ''}
-            {value?.length > 1 ?
-              <li>
-                <Tag size="mini" type="info"> +{value?.length}</Tag>
-              </li> : ''}
-          </Fragment> :
-          <>
-            {
-              value.map((obj: string, index: number) =>
-                <li key={obj}>
-                  <span>{obj}</span>
-                  <i className="icon-error" onClick={deleteText.bind(this, index)} />
-                </li>
-              )
-            }
-          </>}
-        {props.filterable ?
-          <li className="input">
-            <input
-              ref={inputStart}
-              type="text"
-              disabled={disabled}
-              placeholder={value?.length === 0 ? props.placeholder : ''}
-              onChange={inputInput.bind(this, 'multiple')}
-              onFocus={inputFocus}
-              onBlur={inputBlur}
-            />
-          </li> : ''}
-      </ul>
-    </div>
+  <div className={classNames('multiple-text', inputCls)}>
+    <ul placeholder={props.placeholder}>
+      {props.collapseTags ?
+      <Fragment>
+        {value?.length > 0 ?
+        <li>
+          <span>{value[0]}</span>
+          <i className="icon-error" onClick={deleteText.bind(this, 0)}/>
+        </li> : ''}
+        {value?.length > 1 ?
+        <li>
+          <Tag size="mini" type="info"> +{value?.length}</Tag>
+        </li> : ''}
+      </Fragment> :
+      <>
+        {
+          value.map((obj: string, index: number) =>
+          <li key={obj}>
+            <span>{obj}</span>
+            <i className="icon-error" onClick={deleteText.bind(this, index)}/>
+          </li>
+          )
+        }
+      </>}
+      {props.filterable ?
+      <li className="input">
+        <input
+        ref={inputStart}
+        type="text"
+        disabled={disabled}
+        placeholder={value?.length === 0 ? props.placeholder : ''}
+        onChange={inputInput.bind(this, 'multiple')}
+        onFocus={inputFocus}
+        onBlur={inputBlur}
+        />
+      </li> : ''}
+    </ul>
+  </div>
   )
   const isNormalHtml = (
-    <input
-      ref={inputStart}
-      value={value?.length > 0 ? value[0] : ''}
-      readOnly={!props.filterable}
-      placeholder={props.placeholder}
-      className={classNames(inputCls)}
-      disabled={disabled}
-      onChange={inputInput.bind(this, 'normal')}
-      onFocus={inputFocus}
-      onBlur={inputBlur}
-    />
+  <input
+  ref={inputStart}
+  value={value?.length > 0 ? value[0] : ''}
+  readOnly={!props.filterable}
+  placeholder={props.placeholder}
+  className={classNames(inputCls)}
+  disabled={disabled}
+  onChange={inputInput.bind(this, 'normal')}
+  onFocus={inputFocus}
+  onBlur={inputBlur}
+  />
   )
   const downPaneHtml = (
-    <div
-      ref={downEl}
-      className={classNames({
-        [prefixCls + '-select-down-pane']: true,
-        [props.downClass as string]: props.downClass,
-        top: direction2 === 2
-      })}
-      style={downPanelStyle} onClick={downPaneClick}>
-      <div style={downHeightStyle} className="scroll-pane">
-        {props.children}
-      </div>
-      <span className={classNames('down-arrow', {'is-range': props.isRange})} />
+  <div
+  ref={downEl}
+  className={classNames(props.className, {
+    [prefixCls + '-select-down-pane']: true,
+    [props.downClass as string]: props.downClass,
+    top: direction2 === 2
+  })}
+  style={downPanelStyle} onClick={downPaneClick}>
+    <div style={downHeightStyle} className="scroll-pane">
+      {props.children}
     </div>
+    <span className={classNames('down-arrow', {'is-range': props.isRange})}/>
+  </div>
   )
   return (
-    <div
-      ref={el}
-      className={classNames({
-        'is-down': visible.current,
-        [prefixCls + '-select-down']: true,
-        disabled: disabled
-      })} onClick={downToggle}
-      style={{width: props.width}}>
-      <div className="select-control" onClick={selectControlClick}>
-        {props.isRange ? isRangeHtml : props.multiple ? isMultipleHtml : isNormalHtml}
-        <span className="group-icon">
+  <div
+  ref={el}
+  className={classNames({
+    'is-down': visible.current,
+    [prefixCls + '-select-down']: true,
+    disabled: disabled
+  })} onClick={downToggle}
+  style={{width: props.width}}>
+    <div className="select-control" onClick={selectControlClick}>
+      {props.isRange ? isRangeHtml : props.multiple ? isMultipleHtml : isNormalHtml}
+      <span className="group-icon">
         {props.clear && value?.length > 0 ?
-          <i className="icon-close" title="清空" onClick={clearClick} /> : ''}
-          <i className={classNames({down: visible.current && !props.fixedIcon, [`icon-${props.icon}`]: true})} />
+        <i className="icon-close" title="清空" onClick={clearClick}/> : ''}
+        <i className={classNames({down: visible.current && !props.fixedIcon, [`icon-${props.icon}`]: true})}/>
         </span>
-      </div>
-      {props.appendToBody ? ReactDOM.createPortal(downPaneHtml, document.body) : downPaneHtml}
-    </div>)
+    </div>
+    {props.appendToBody ? ReactDOM.createPortal(downPaneHtml, document.body) : downPaneHtml}
+  </div>)
 })
 SelectDown.displayName = 'SelectDown'
 SelectDown.defaultProps = {
