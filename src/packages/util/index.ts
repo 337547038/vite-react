@@ -36,7 +36,7 @@ export function omit(obj: any, delKey: string[]) {
   }
   if (Array.isArray(obj)) {
     return obj.filter(item => {
-      console.log(item)
+      // console.log(item)
       return !delKey.includes(item)
     })
   }

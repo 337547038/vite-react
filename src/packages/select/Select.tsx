@@ -53,7 +53,7 @@ const Select = forwardRef((props: Props, ref: React.Ref<SelectRef>) => {
     }
   })
   const setDefaultText = debounce(() => {
-    console.log('setDefaultText')
+    // console.log('setDefaultText')
     const defaultValue = props.multiple ? (props.defaultValue || []) : (props.defaultValue || '')
     if (defaultValue?.length > 0 && optionsList?.length > 0) {
       let checkedText: string[] = []
@@ -110,12 +110,10 @@ const Select = forwardRef((props: Props, ref: React.Ref<SelectRef>) => {
       const activeLabel = obj[optionsKey.label]
       if (props.multiple) {
         // 多选
-        console.log('more')
         if (props.multipleLimit && props.multipleLimit > 0 && props.multipleLimit <= labelText.length) {
           props.limitChange && props.limitChange()
           return false
         }
-        console.log('more2')
         let newValue = []
         let newLabel = []
         if (value.includes(activeValue)) {
