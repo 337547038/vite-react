@@ -1,2 +1,4 @@
 import Switch from './Switch'
-export { Switch }
+import type {getValueRef as SwitchRef} from '../form/types'
+
+export {Switch, SwitchRef}

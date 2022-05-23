@@ -1,4 +1,4 @@
-import React, {useContext, useState, forwardRef, useImperativeHandle} from 'react'
+import React, {useEffect, useState, forwardRef, useImperativeHandle} from 'react'
 import classNames from 'classnames'
 import {prefixCls} from '../prefix'
 import type {getValueRef} from "../form/types"
@@ -41,6 +41,9 @@ const SwitchApp = forwardRef((props: Props, ref: React.Ref<getValueRef>) => {
     setChecked(!checked)
     props.onChange && props.onChange(getValue(!checked))
   }
+  useEffect(() => {
+    setChecked(props.defaultValue)
+  }, [props.defaultValue])
   const getValue = (val?: boolean) => {
     const isChecked = val === undefined ? checked : val
     if (isChecked) {
