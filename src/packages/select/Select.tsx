@@ -54,7 +54,7 @@ const Select = forwardRef((props: Props, ref: React.Ref<SelectRef>) => {
     }
   })
   const setDefaultText = debounce(() => {
-    console.log('setDefaultText')
+    // console.log('setDefaultText')
     const defaultValue = props.multiple ? (props.defaultValue || []) : (props.defaultValue || '')
     if (defaultValue?.length > 0 && optionsList?.length > 0) {
       let checkedText: string[] = []
