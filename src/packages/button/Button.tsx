@@ -2,7 +2,7 @@ import React, {useContext} from 'react'
 import classNames from 'classnames'
 import {prefixCls} from '../prefix'
 import {useNavigate} from 'react-router-dom'
-import FormContext from '../form/contextForm'
+import {FormPropsContext} from '../form/contextForm'
 
 interface ButtonProps {
   type?: string
@@ -21,17 +21,10 @@ interface ButtonProps {
 }
 
 const ButtonApp: React.FC<ButtonProps> = (props) => {
-  const contextForm = useContext(FormContext)
-  let disabled = props.disabled
-  if (contextForm.disabled) {
-    // 表单设置了true时，使用父级表单设置的
-    disabled = true
-  }
-  let size = props.size
-  if (contextForm.size) {
-    // 表单设置了true时，使用父级表单设置的
-    size = contextForm.size
-  }
+  const contextForm = useContext(FormPropsContext)
+  // 表单设置了true时，使用父级表单设置的
+  const disabled = contextForm.disabled || props.disabled
+  const size = props.size || contextForm.size
   const navigate = useNavigate();
   const classes = classNames(props.className, {
     [`${prefixCls}-btn`]: true,

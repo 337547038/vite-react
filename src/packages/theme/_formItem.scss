@@ -6,7 +6,7 @@
       &:before {content: '*';color: #f00;display: inline-block;vertical-align: middle;}
     }
   }
-  @include ns(form-box) {position: relative;display: flex;align-items: center;
+  @include ns(form-box) {position: relative;display: flex;align-items: center;flex: 2;
   }
   /*错误提示*/
   @include ns(form-tips) {color: #f00;margin: 0 5px;

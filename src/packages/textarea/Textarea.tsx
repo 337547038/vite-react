@@ -1,7 +1,7 @@
 import React, {forwardRef, useRef, useImperativeHandle, useState, useContext, useEffect} from 'react'
 import classNames from 'classnames'
 import {prefixCls} from '../prefix'
-import FormContext from '../form/contextForm'
+import {FormItemContext} from '../form/contextForm'
 import type {getValueRef} from '../form/types'
 import {omit, debounce} from "../util"
 
@@ -44,12 +44,9 @@ const Textarea = forwardRef<TextareaRef, Props>((props, ref) => {
   }
   // 将子组件方法暴露给父组件
   useImperativeHandle(ref, () => ({getValue, focus, clear}))
-  const contextForm = useContext(FormContext)
-  let disabled = props.disabled
-  if (contextForm.disabled) {
-    // 表单设置了true时，使用父级表单设置的
-    disabled = true
-  }
+  const useFormItemContext = useContext(FormItemContext)
+  // 表单设置了true时，使用父级表单设置的
+  const disabled = useFormItemContext.disabled || props.disabled
   const defaultStyle = {
     width: props.width,
     height: props.height,
@@ -63,6 +60,7 @@ const Textarea = forwardRef<TextareaRef, Props>((props, ref) => {
     setValue(value)
     props.onChange && props.onChange(value, evt)
     setAutoHeight()
+    useFormItemContext.controlChange && useFormItemContext.controlChange(value, 'change')
   }
   const setAutoHeight = debounce(() => {
     if (autoHeight) {
@@ -87,12 +85,12 @@ const Textarea = forwardRef<TextareaRef, Props>((props, ref) => {
 
   const newProps = omit(props, ['autoHeight', 'showWordLimit', 'defaultValue', 'maxHeight'])
   return (
-    <div className={`${prefixCls}-textarea`}>
+    <div className={classNames(`${prefixCls}-textarea`, props.className)}>
       <textarea
         {...newProps}
         ref={textareaEl}
         value={value}
-        className={classNames(props.className, `${prefixCls}-input-control`, {disabled: disabled})}
+        className={classNames(`${prefixCls}-input-control`, {disabled: disabled})}
         style={style}
         disabled={disabled}
         onChange={onChange}

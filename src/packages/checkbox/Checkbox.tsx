@@ -1,7 +1,7 @@
 import React, {forwardRef, useImperativeHandle, useState, useContext, useEffect} from 'react'
 import classNames from 'classnames'
 import {prefixCls} from '../prefix'
-import FormContext from '../form/contextForm'
+import {FormItemContext} from '../form/contextForm'
 import type {getValueRef} from '../form/types'
 
 interface Props {
@@ -17,12 +17,9 @@ interface Props {
 }
 
 const Checkbox = forwardRef<getValueRef, Props>((props, ref) => {
-  const contextForm = useContext(FormContext)
-  let disabled = props.disabled
-  if (contextForm.disabled) {
-    // 表单设置了true时，使用父级表单设置的
-    disabled = true
-  }
+  const useFormItemContext = useContext(FormItemContext)
+  // 表单设置了true时，使用父级表单设置的
+  const disabled = useFormItemContext.disabled || props.disabled
   const getDefaultChecked = () => {
     let defaultChecked = false
     if (typeof props.checked === 'boolean') {
@@ -45,7 +42,9 @@ const Checkbox = forwardRef<getValueRef, Props>((props, ref) => {
       return
     }
     setChecked(!checked)
-    props.onChange && props.onChange(getValue(!checked))
+    const val = getValue(!checked)
+    props.onChange && props.onChange(val)
+    useFormItemContext.controlChange && useFormItemContext.controlChange(val, 'change')
   }
   /**
    * check 当前是否选中
@@ -69,21 +68,21 @@ const Checkbox = forwardRef<getValueRef, Props>((props, ref) => {
   }
   useImperativeHandle(ref, () => ({getValue}))
   return (
-  <label
-  className={classNames(props.className, {
-    [prefixCls + '-checkbox']: true,
-    checked: checked,
-    disabled: disabled
-  })}
-  onClick={changeHandler}>
+    <label
+      className={classNames(props.className, {
+        [prefixCls + '-checkbox']: true,
+        checked: checked,
+        disabled: disabled
+      })}
+      onClick={changeHandler}>
    <span>
-    <span className={classNames('checkbox-inner icon-check', {checked: checked})}/>
+    <span className={classNames('checkbox-inner icon-check', {checked: checked})} />
      {props.children ?
-     <span className="checkbox-text">{props.children}</span> :
-     <span className="checkbox-text">{props.label}</span>
+       <span className="checkbox-text">{props.children}</span> :
+       <span className="checkbox-text">{props.label}</span>
      }
    </span>
-  </label>)
+    </label>)
 })
 Checkbox.displayName = 'Checkbox'
 Checkbox.defaultProps = {}

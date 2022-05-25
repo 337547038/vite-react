@@ -1,16 +1,90 @@
-import React, {ReactElement, useCallback, useState, useRef} from "react";
-import {FormItem, Field} from '../../packages/formItem'
-import {Input} from '../../packages/input'
-import {Form} from '../../packages/form'
-import {Button} from "../../packages/button";
-import type {FormRef} from "../../packages/form";
-import type {FormItemRef} from "../../packages/formItem";
-import type {InputRef} from "../../packages/input";
-import {RadioGroup} from '../../packages/radio'
-import {CheckboxGroup, Checkbox} from '../../packages/checkbox'
-import {Switch} from '../../packages/switch'
-import {Select} from '../../packages/select'
-import {Textarea} from '../../packages/textarea'
+# Form 表单
+
+### 基本使用
+
+```jsx
+import {useRef} from 'react'
+import {Form} from './index'
+import {FormItem} from '../formItem'
+import {Input} from '../input'
+import {Button} from '../button'
+function Example() {
+  const [formValue, setFormValue] = useState<{ [key: string]: any }>({
+    userName: 'userName',
+    password: 'passwordValue',
+    password2: 'passwordValue'
+  })
+  const formRules = {
+    password: [
+      {type: 'required', msg: '密码不能为空'},
+      {type: 'minLength', len: 6, msg: '密码不能小于6位'}
+    ],
+    password2: [
+      {type: 'required', msg: '密码2不能为空'},
+      {
+        type: 'fn',
+        msg: '两次输入的密码不一致',
+        validator: (val: string) => {
+          return val === formValue.password
+        }
+      }
+    ],
+    userName: [{type: 'required', msg: '用户名不能为空'}]
+  }
+  const formEl = useRef<FormRef>(null)
+  const submit = () => {
+    formEl.current?.validate()
+      .then((res) => {
+        console.log(res)
+      })
+      .catch((res) => {
+        console.log(res)
+      })
+  }
+  const resetForm = () => {
+    formEl.current?.resetForm()
+  }
+  const getValue = () => {
+    console.log(formEl.current?.getValue())
+  }
+  const setValue = () => {
+    console.log(formEl.current?.setValue({}))
+  }
+  const onChange = (val: string) => {
+    setFormValue({...formValue, password: val})
+  }
+  const formOnChange = (val: any, prop: string) => {
+    console.log(val)
+    console.log(prop)
+  }
+  return (<div className='form-demo'>
+    <Form rules={formRules} ref={formEl} onChange={formOnChange}>
+      <FormItem label="userName" prop="userName" type='input' defaultValue={formValue.userName} data={{placeholder:"请输入用户名"}}>
+      </FormItem>
+      <FormItem label="password" prop="password">
+        <Input defaultValue={formValue.password} placeholder="请输入密码" onChange={onChange} />
+      </FormItem>
+      <FormItem label="password2" prop="password2">
+        <Input defaultValue={formValue.password2} placeholder="请再次输入密码" />
+      </FormItem>
+    </Form>
+    <Button onClick={submit} type="primary">submit</Button>
+    <Button onClick={resetForm}>reset</Button>
+    <Button onClick={getValue}>getValue</Button>
+    <Button onClick={setValue}>setValue</Button>
+  </div>)
+}
+export default Example
+```
+
+### 表单校验
+
+```jsx
+import {useRef} from 'react'
+import {Form} from './index'
+import {FormItem} from '../formItem'
+import {Button} from '../button'
+import {Checkbox} from '../checkbox'
 
 function Example() {
   const formValue = {
@@ -45,9 +119,9 @@ function Example() {
     checkboxGroup: [{type: 'required', msg: '不能为空'}],
     textarea: [{type: 'required', msg: 'textarea不能为空'}],
     radio: [{type: 'required', msg: 'radio不能为空'}],
-    datePicker: [{type: 'required', msg: '请选择日期'}],
+    /*datePicker: [{type: 'required', msg: '请选择日期'}],
     timePicker: [{type: 'required', msg: '请选择时间'}],
-    timeSelect: [{type: 'required', msg: '请选择时间'}]
+    timeSelect: [{type: 'required', msg: '请选择时间'}]*/
   }
   // 重置
   const resetForm = () => {
@@ -93,7 +167,7 @@ function Example() {
 
         <FormItem prop="digits" label="digits" type='input' />
 
-        <FormItem prop="number" label="number" type='input' />
+        <FormItem prop="number" label="number" type='input'  defaultValue={formValue.number}/>
 
         <FormItem prop="tel" label="tel" type='input' data={{placeholder: "请输入电话号码"}} />
 
@@ -126,7 +200,7 @@ function Example() {
         {/*<FormItem label="datePicker" prop="datePicker">
         <ak-date-picker defaultValue="formValue.datePicker" placeholder="请选择" />
       </FormItem>*/}
-        <FormItem label="switch" type='switch' prop='switch' />
+        <FormItem label="switch" type='switch' prop='switch' defaultValue={formValue.switch}/>
 
         {/*<FormItem label="timePicker" prop="timePicker">
         <ak-time-picker defaultValue="formValue.timePicker" />
@@ -147,4 +221,29 @@ function Example() {
 }
 
 export default Example
+```
 
+## API
+
+### Form Props
+
+| 参数          | 类型                  | 说明                                         |
+|-------------|---------------------|--------------------------------------------|
+| rules       | object              | 校验规则                                       |
+| showMessage | boolean/true        | 显示错误提示                                     |
+| trigger     | string/change       | 表单控件校验触发类型，change和blur两种                   |
+| labelWidth  | string              | label的宽度                                   |
+| required    | boolean/true        | 是否根据验证规则自动生成必填样式名                          |
+| size        | string              | 用于控制该表单内组件的尺寸，medium / small / mini        |
+| disabled    | boolean/true        | 表单禁用状态，影响子级formItem,button及formItem下所有表单控件 |
+| onChange    | function(val,props) | 表单项改变事件                                    |
+
+### Form Methods
+
+| 参数            | 说明                                               |
+|---------------|--------------------------------------------------|
+| validate      | 对单个表单项进行校验的方法，Promise返回验证结果                      |
+| clearValidate | 移除表单项的校验结果。传入待移除的表单项的 prop 组成的数组，如不传则移除整个表单的校验结果 |
+| resetForm     | 重置表单                                             |
+| setValue      | 使用resetForm功能时，当表单数据发生改变，需使用setValue设置           |
+| getValue      | 获取表单值                                            |

@@ -1,7 +1,7 @@
 import React, {forwardRef, useImperativeHandle, useState, useContext, useEffect, useRef} from 'react'
 import classNames from 'classnames'
 import {prefixCls} from '../prefix'
-import FormContext from '../form/contextForm'
+import {FormItemContext} from '../form/contextForm'
 import type {getValueRef} from '../form/types'
 import Checkbox from './Checkbox'
 import {omit} from '../util'
@@ -31,7 +31,9 @@ const CheckboxGroup = forwardRef<CheckboxGroupRef, Props>((props, ref) => {
   //console.log(props.defaultValue)
   const value = useRef<string[]>(defaultValue)
   const [disabledLimit, setDisabledLimit] = useState<{ [key: number]: boolean }>({})
-  const disabled = props.disabled
+  const useFormItemContext = useContext(FormItemContext)
+  // 表单设置了true时，使用父级表单设置的
+  const disabled = useFormItemContext.disabled || props.disabled
   const onChange = (obj: Record<string, string>, val: boolean | string) => {
     if (disabled) {
       return false

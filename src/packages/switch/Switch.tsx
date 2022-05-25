@@ -1,7 +1,8 @@
-import React, {useEffect, useState, forwardRef, useImperativeHandle} from 'react'
+import React, {useEffect, useState, forwardRef, useImperativeHandle, useContext} from 'react'
 import classNames from 'classnames'
 import {prefixCls} from '../prefix'
 import type {getValueRef} from "../form/types"
+import {FormItemContext} from '../form/contextForm'
 
 interface Props {
   defaultValue?: string | number | boolean
@@ -18,7 +19,9 @@ interface Props {
 }
 
 const SwitchApp = forwardRef((props: Props, ref: React.Ref<getValueRef>) => {
-  const disabled = props.disabled
+  const useFormItemContext = useContext(FormItemContext)
+  // 表单设置了true时，使用父级表单设置的
+  const disabled = useFormItemContext.disabled || props.disabled
   const [checked, setChecked] = useState(props.defaultValue)
   let style = {}
   if (checked && props.activeColor) {

@@ -9,7 +9,7 @@ import React, {
 } from 'react'
 import classNames from 'classnames'
 import {prefixCls} from '../prefix'
-import FormContext from '../form/contextForm'
+import {FormItemContext} from '../form/contextForm'
 import {Tag} from '../tag'
 import {getOffset, getWindow} from '../util/dom'
 import ReactDOM from 'react-dom'
@@ -54,12 +54,9 @@ const SelectDown = forwardRef<SelectDownRef, Props>((props, ref) => {
   const [value, setValue] = useState(defaultValue)
   const [direction2, setDirection2] = useState<number>(props.direction || 0)
   const [downPanelStyle, setDownPanelStyle] = useState<React.CSSProperties>(Object.assign({}, props.downStyle, {display: 'none'}))
-  const contextForm = useContext(FormContext)
-  let disabled = props.disabled
-  if (contextForm.disabled) {
-    // 表单设置了true时，使用父级表单设置的
-    disabled = true
-  }
+  const useFormItemContext = useContext(FormItemContext)
+  // 表单设置了true时，使用父级表单设置的
+  const disabled = useFormItemContext.disabled || props.disabled
   const el = useRef<HTMLDivElement>(null)
   const downEl = useRef<HTMLDivElement>(null)
   useEffect(() => {

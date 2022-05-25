@@ -47,11 +47,11 @@ function Example() {
   }
   return (<div>
     <div>
-      <RadioGroup options={options} value="a1" onChange={onChangeGroup}/>
+      <RadioGroup options={options} defaultValue="a1" onChange={onChangeGroup}/>
     </div>
     <div>
       <p>禁用组</p>
-      <RadioGroup options={options} value="a2" disabled={true}/>
+      <RadioGroup options={options} defaultValue="a2" disabled={true}/>
     </div>
   </div>)
 }
@@ -73,13 +73,13 @@ export default Example
 
 ### RadioGroup
 
-| 参数         | 类型                | 说明                                                   |
-|------------|-------------------|------------------------------------------------------|
-| value      | string            | Radio组选中的值                                           |
-| options    | array             | 组数据                                                  |
-| optionsKey | object            | 指定选择数据的label和value属于，默认{label:'label',value:'value'} |
-| disabled   | Boolean/false     | 禁用组                                                  |
-| onChange   | function(val,obj) | 改变事件 |
+| 参数           | 类型                | 说明                                                   |
+|--------------|-------------------|------------------------------------------------------|
+| defaultValue | string            | Radio默认选中的值                                         |
+| options      | array             | 组数据                                                  |
+| optionsKey   | object            | 指定选择数据的label和value属于，默认{label:'label',value:'value'} |
+| disabled     | Boolean/false     | 禁用组                                                  |
+| onChange     | function(val,obj) | 改变事件                                                 |
 
 ### RadioGroup options
 

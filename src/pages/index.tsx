@@ -12,6 +12,8 @@ import type {CheckboxGroupRef} from "../packages/checkbox/Group";
 import {Tag} from '../packages/tag'
 import {SelectDown} from '../packages/selectDown'
 import {Select} from '../packages/select'
+import {Switch} from '../packages/switch'
+import {Field, FormItem} from '../packages/formItem'
 
 interface ButtonProps {
   name: string
@@ -24,14 +26,14 @@ const App: React.FC<ButtonProps> = (props) => {
   const [defaultValue, setDefaultValue] = useState(['a3'])
   const [options, setOptions] = useState([])
   const [disabled, setDisabled] = useState(false)
-  const [value, setValue] = useState('3')
+  const [value, setValue] = useState('false')
   const onClick = () => {
     // 模拟加载完成后设置数据
     //console.log('模拟加载完成后设置数据')
     //setDefaultValue(['a5', 'a1', 'a3'])
     //setOptions([...option])
     //setDisabled(true)
-    setValue('5')
+    setValue('true')
   }
 
   const onChange = (val: string[]) => {
@@ -55,12 +57,13 @@ const App: React.FC<ButtonProps> = (props) => {
     {label: '选项9', value: '9'},
     {label: '选项10', value: '10', class: 'red'}
   ]
+  const inputData = {defaultValue: 'abc'}
   return (
   <div className="docs-demo">
     <Q1></Q1>
-    <Select defaultValue={value} placeholder="请选择" options={options}/>
 
-
+    {/*<Field type="input" data={inputData} onChange={onChange} defaultValue={value} />
+    <FormItem label="input" type="input" data={inputData} defaultValue={value} onChange={onChange}/>*/}
     <p><Button onClick={onClick}>模拟数据变化</Button></p>
   </div>)
 

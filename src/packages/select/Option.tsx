@@ -6,7 +6,7 @@ interface Props {
 }
 
 const Options: React.FC<Props> = (props) => {
-  return (<div></div>)
+  return (<div/>)
 }
 Options.displayName = 'Options'
 export default Options

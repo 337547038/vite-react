@@ -1,11 +1,11 @@
-import React, {forwardRef, useRef, useImperativeHandle, useState, useContext, useEffect, useCallback} from 'react'
+import React, {forwardRef, useRef, useImperativeHandle, useState, useEffect, useContext} from 'react'
 import classNames from 'classnames'
 import {prefixCls} from '../prefix'
-import FormContext from '../form/contextForm'
 import {SelectDown} from "../selectDown"
 import type {SelectProps, SelectDownRef} from '../selectDown'
 import {omit, debounce} from '../util'
 import type {getValueRef} from '../form/types'
+import {FormItemContext} from '../form/contextForm'
 
 interface Props extends Omit<SelectProps, 'isRange' | 'rangeSeparator' | 'endPlaceholder' | 'defaultValue'> {
   multipleLimit?: number
@@ -31,6 +31,7 @@ const Select = forwardRef((props: Props, ref: React.Ref<SelectRef>) => {
   const [searchHide, setSearchHide] = useState<string[]>([])
   const blurValue = useRef<string>('')
   const refEl = useRef<SelectDownRef>(null)
+  const useFormItemContext = useContext(FormItemContext)
   useEffect(() => {
     setDefaultText()
     setOptionsList([...props.options || []])
@@ -108,14 +109,15 @@ const Select = forwardRef((props: Props, ref: React.Ref<SelectRef>) => {
       }
       const activeValue = obj[optionsKey.value]
       const activeLabel = obj[optionsKey.label]
+      let changeValue: any = []
       if (props.multiple) {
         // 多选
-        console.log('more')
+        //console.log('more')
         if (props.multipleLimit && props.multipleLimit > 0 && props.multipleLimit <= labelText.length) {
           props.limitChange && props.limitChange()
           return false
         }
-        console.log('more2')
+        // console.log('more2')
         let newValue = []
         let newLabel = []
         if (value.includes(activeValue)) {
@@ -129,14 +131,16 @@ const Select = forwardRef((props: Props, ref: React.Ref<SelectRef>) => {
         }
         setValue(newValue)
         setLabelText(newLabel)
-        props.onChange && props.onChange(newValue)
+        changeValue = newValue
       } else {
         // 单选
         slideUp() // 收起下拉
         setValue([obj[optionsKey.value]])
         setLabelText([obj[optionsKey.label]])
-        props.onChange && props.onChange(obj[optionsKey.value])
+        changeValue = obj[optionsKey.value]
       }
+      props.onChange && props.onChange(changeValue)
+      useFormItemContext.controlChange && useFormItemContext.controlChange(changeValue, 'change')
     }
     evt.stopPropagation()
 
@@ -217,32 +221,32 @@ const Select = forwardRef((props: Props, ref: React.Ref<SelectRef>) => {
   useImperativeHandle(ref, () => ({getValue, clearValue}))
   const newProps = omit(props, ['options', 'multipleLimit', 'optionsKey', 'beforeChange', 'async', 'emptyText'])
   return (
-  <SelectDown
-  {...newProps}
-  defaultValue={labelText}
-  onBlur={onBlur}
-  onInput={onInput}
-  onDelete={onDelete}
-  toggleClick={toggleClick}
-  ref={refEl}>
-    <ul className={`${prefixCls}-select`}>
-      {optionsList.map((item: Record<string, string>, index: number) =>
-      <li
-      key={index}
-      className={classNames({
-        disabled: item.disabled,
-        [item.class]: item.class,
-        active: getActive(item)
-      })}
-      title={item[optionsKey.label]}
-      onClick={onSelect.bind(this, item)}
-      style={{display: searchHide.includes(item[optionsKey.value]) ? 'none' : ''}}>
-        {item[optionsKey.label]}</li>
-      )}
-      {optionsList.length === 0 || optionsList.length === searchHide.length ?
-      <li className="select-empty-options">{props.emptyText || '暂无数据'}</li> : ''}
-    </ul>
-  </SelectDown>)
+    <SelectDown
+      {...newProps}
+      defaultValue={labelText}
+      onBlur={onBlur}
+      onInput={onInput}
+      onDelete={onDelete}
+      toggleClick={toggleClick}
+      ref={refEl}>
+      <ul className={`${prefixCls}-select`}>
+        {optionsList.map((item: Record<string, string>, index: number) =>
+          <li
+            key={index}
+            className={classNames({
+              disabled: item.disabled,
+              [item.class]: item.class,
+              active: getActive(item)
+            })}
+            title={item[optionsKey.label]}
+            onClick={onSelect.bind(this, item)}
+            style={{display: searchHide.includes(item[optionsKey.value]) ? 'none' : ''}}>
+            {item[optionsKey.label]}</li>
+        )}
+        {optionsList.length === 0 || optionsList.length === searchHide.length ?
+          <li className="select-empty-options">{props.emptyText || '暂无数据'}</li> : ''}
+      </ul>
+    </SelectDown>)
 })
 Select.displayName = 'Select'
 Select.propTypes = {}

@@ -1,7 +1,7 @@
 import React, {forwardRef, useRef, useImperativeHandle, useState, useContext, useEffect} from 'react'
 import classNames from 'classnames'
 import {prefixCls} from '../prefix'
-import FormContext from '../form/contextForm'
+import {FormItemContext} from '../form/contextForm'
 import type {getValueRef} from '../form/types'
 
 interface Props {
@@ -24,6 +24,7 @@ interface Props {
   readOnly?: boolean
   prepend?: React.ReactNode | string
   append?: React.ReactNode | string
+  updateContext?: boolean // 设置为true时不更新表单的context方法值
 }
 
 export interface InputRef extends getValueRef {
@@ -36,6 +37,7 @@ const Input = forwardRef<InputRef, Props>((props, ref) => {
   const [eyeShow, setEyeShow] = useState(props.showEye)
   const [inputType, setInputType] = useState(props.type)
   const inputEl = useRef<{ focus: () => void }>(null)
+  const useFormItemContext = useContext(FormItemContext)
   // 取值方法
   const getValue = () => {
     return value
@@ -48,29 +50,35 @@ const Input = forwardRef<InputRef, Props>((props, ref) => {
     setValue('')
   }
   // 将子组件方法暴露给父组件
-  useImperativeHandle(ref, () => ({getValue, focus,clear}))
-  const contextForm = useContext(FormContext)
-  let disabled = props.disabled
-  if (contextForm.disabled) {
-    // 表单设置了true时，使用父级表单设置的
-    disabled = true
+  useImperativeHandle(ref, () => ({getValue, focus, clear}))
+  // 表单设置了true时，使用父级表单设置的
+  const disabled = useFormItemContext.disabled || props.disabled
+  // 当前值发生变化时，通过context父级
+  const setFormItemContext = (val: string, type: string) => {
+    if (!props.updateContext) {
+      useFormItemContext.controlChange && useFormItemContext.controlChange(val, type)
+    }
   }
   const onChange = (evt: React.ChangeEvent) => {
     const {value} = evt.target as HTMLInputElement
     setValue(value)
     props.onChange && props.onChange(value, evt)
+    setFormItemContext(value, 'change')
   }
   const onFocus = (evt: React.ChangeEvent) => {
     const {value} = evt.target as HTMLInputElement
     props.onFocus && props.onFocus(value, evt)
+    setFormItemContext(value, 'focus')
   }
   const onBlur = (evt: React.ChangeEvent) => {
     const {value} = evt.target as HTMLInputElement
     props.onBlur && props.onBlur(value, evt)
+    setFormItemContext(value, 'blur')
   }
   // 清空
   const clearValue = () => {
     setValue('')
+    setFormItemContext('', 'change')
   }
   const showEyeClick = () => {
     setEyeShow(!eyeShow)
@@ -83,6 +91,7 @@ const Input = forwardRef<InputRef, Props>((props, ref) => {
   }
   useEffect(() => {
     setValue(props.defaultValue)
+    setFormItemContext(props.defaultValue || '', 'default')
   }, [props.defaultValue])
   return (
     <div className={classNames(props.className,
@@ -124,7 +133,7 @@ const Input = forwardRef<InputRef, Props>((props, ref) => {
       }
       {props.prefixIcon ?
         <span className="prefix-icon">
-      <i className={props.prefixIcon}/>
+      <i className={props.prefixIcon} />
     </span> : ''
       }
       <span className="suffix-icon">
