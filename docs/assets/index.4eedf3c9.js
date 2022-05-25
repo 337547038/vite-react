@@ -1,0 +1,1 @@
+function u(i,r=100,t=!1){let e;return function(...n){e&&clearTimeout(e),t&&(e||i.apply(this,n)),e=setTimeout(()=>{t?e=null:i.apply(this,n)},r)}}function f(i,r){if(!i)return i;if(Array.isArray(i))return i.filter(e=>!r.includes(e));let t={};for(const e in i)r.includes(e)||(t[e]=i[e]);return t}export{u as d,f as o};
