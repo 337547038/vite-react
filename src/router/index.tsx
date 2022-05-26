@@ -1,6 +1,7 @@
 import React, {FC, useEffect, lazy} from 'react';
 import routes from './routesConfig';
 import {Route, Routes, useNavigate, Navigate, BrowserRouter} from 'react-router-dom';
+import {Loading} from '../packages/loading'
 // 路由装饰器
 const RouteDecorator = (props: { route: any }) => {
   const {route} = props;
@@ -20,7 +21,7 @@ const RouteDecorator = (props: { route: any }) => {
   return <route.component />;
 };
 const RouterComponent: FC = () => (
-  <React.Suspense fallback={<div>...</div>}>
+  <React.Suspense fallback={<Loading visible={true} size='small'/>}>
     <Routes>
       {
         routes.map(route => <Route key={route.path} path={route.path} element={<route.component />}>
