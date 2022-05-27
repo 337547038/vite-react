@@ -87,3 +87,22 @@ table {width: 100%;border-spacing: 0; border-collapse: collapse;border: 1px soli
 .demo-loading{
   .item{width: 100px;float: left;margin-right: 10px;display: flex;height: 100px}
 }
+//////////// my-node-enter my-node-enter-active
+//https://reactcommunity.org/react-transition-group/css-transition
+.CSSTransition{display: none}
+.my-node-enter {
+  opacity: 0;
+  display: block;
+}
+.my-node-enter-active {
+  opacity: 1;
+  transition: opacity 20000ms;
+}
+.my-node-exit-done{}
+.my-node-exit {
+  opacity: 1;
+}
+.my-node-exit-active {
+  opacity: 0;
+  transition: opacity 20000ms;
+}
