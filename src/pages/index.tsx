@@ -61,10 +61,10 @@ const App: React.FC<ButtonProps> = (props) => {
   return (
   <div className="docs-demo">
     <Q1></Q1>
-
-    {/*<Field type="input" data={inputData} onChange={onChange} defaultValue={value} />
-    <FormItem label="input" type="input" data={inputData} defaultValue={value} onChange={onChange}/>*/}
-    <p><Button onClick={onClick}>模拟数据变化</Button></p>
+    {/*<Select defaultValue="2" placeholder="请选择" options={options} clear={true}/>
+    <Field type="input" data={inputData} onChange={onChange} defaultValue={value} />
+    <FormItem label="input" type="input" data={inputData} defaultValue={value} onChange={onChange}/>
+    <p><Button onClick={onClick}>模拟数据变化</Button></p>*/}
   </div>)
 
 };

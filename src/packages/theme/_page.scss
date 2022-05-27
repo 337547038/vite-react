@@ -24,7 +24,8 @@
       }
     }
   }
-  @include ns(input-control) {text-align: center;width: 50px;height: 32px;line-height: 32px;box-sizing: border-box}
+  @include ns(select-down){width: 92px;min-width: 92px}
+  @include ns(input-control) {height: 32px;line-height: 32px;box-sizing: border-box}
   @include ns(select) {min-width: inherit;
     ul {}
     @include ns(input-control) {width: 100px;}

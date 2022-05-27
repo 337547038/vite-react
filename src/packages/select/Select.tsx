@@ -33,9 +33,11 @@ const Select = forwardRef((props: Props, ref: React.Ref<SelectRef>) => {
   const refEl = useRef<SelectDownRef>(null)
   const useFormItemContext = useContext(FormItemContext)
   useEffect(() => {
-    setDefaultText()
     setOptionsList([...props.options || []])
   }, [props.defaultValue, props.options])
+  useEffect(() => {
+    setDefaultText()
+  }, [optionsList, props.defaultValue])
   useEffect(() => {
     getChildOpt()
   }, [props.children])
