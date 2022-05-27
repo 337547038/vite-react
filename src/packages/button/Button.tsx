@@ -25,7 +25,7 @@ const ButtonApp: React.FC<ButtonProps> = (props) => {
   // 表单设置了true时，使用父级表单设置的
   const disabled = contextForm.disabled || props.disabled
   const size = props.size || contextForm.size
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const classes = classNames(props.className, {
     [`${prefixCls}-btn`]: true,
     'is-round': props.round,
