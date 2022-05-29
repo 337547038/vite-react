@@ -203,13 +203,17 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
     return ''
   }
   // 固定表头
-  const fixedHead = () => {
+  const fixedHead = debounce(() => {
+    console.log('fixedHead')
     // 如果有高和表头，则固定表头
     if (props.height && showHeader && tableDiv.current) {
       tableDiv.current?.addEventListener('scroll', scrollHandle, false)
     }
-    fixedRight(0) // 初始化时横向滚动条在0位置
-  }
+    // 目前初始时获取到的表格宽(tableWidth)有问题，需滚动下才能获取实际的宽，加个setTimeout处理
+    setTimeout(() => {
+      fixedRight(0) // 初始化时横向滚动条在0位置
+    }, 0)
+  })
   // 固定表头 监听滚动事件
   const scrollHandle = () => {
     const scrollTop = tableDiv.current?.scrollTop || 0
@@ -239,7 +243,6 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
     // 可移动的最大宽
     // div可见宽
     let moveMaxWidth = scrollLeft - (tableWidth - (tableDiv.current?.clientWidth || 0))
-    // 这里需优化下，初始时右边固定应在可见区，目前初始时获取到的表格宽(tableWidth)有问题，需滚动下才能获取实际的宽
     if (fixedRight.length > 0) {
       for (let i = 0, len = fixedRight.length; i < len; i++) {
         fixedRight[i].style.transform = `translateX(${moveMaxWidth}px)translateZ(90px)`
