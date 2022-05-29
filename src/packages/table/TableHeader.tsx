@@ -1,83 +1,102 @@
-import React, {forwardRef, useRef, useImperativeHandle, useState, useContext, useEffect, useCallback} from 'react'
+import React, {forwardRef, useState, useRef, useImperativeHandle} from 'react'
 import classNames from 'classnames'
-
-import {prefixCls} from '../prefix'
 import {Checkbox} from '../checkbox'
+import type {ColumnsProps} from "./types";
+
+interface ColumnsPropsAdd extends ColumnsProps {
+  _layer: number
+  _rowSpan?: number
+  _colSpan?: number
+  _tProps: string
+}
 
 interface Props {
   showHeader?: boolean
   drag?: boolean
   title?: boolean
   selectChecked?: number // 表头checkbox勾选状态0全不选，1全选，2半选
-  sortSingle?: boolean
-  headMaxLayer?: number
-  event: () => void
+  event: (type: string, val: any) => void
+  columns: ColumnsPropsAdd[]
+  layer: number[]
 }
 
-interface TableHeaderRef {
-  key: any
+export interface TableHeaderRef {
+  scrollTop: (val: number) => void
 }
 
 const TableHeader = forwardRef((props: Props, ref: React.Ref<TableHeaderRef>) => {
   const {
-    headMaxLayer = 1,
     selectChecked = 0
   } = props
-  const headMaxLayerArr = []
-  for (let i = 0; i < headMaxLayer; i++) {
-    headMaxLayerArr.push(i.toString())
-  }
-  const el = useRef(null)
-  const [sortBy, setSortBy] = useState({})
-  const getColumnsFilter = (index: number) => {
-    return getColumns.value.filter((item: any) => {
-      return item.type !== 'extend' && item.layer === index
-    })
-  }
-  const getShowHoverTitle = (item: any) => {
-    return 'true'
-  }
-  const headMouseMove = (evt: any, sort: any) => {
 
+  const [sortBy, setSortBy] = useState<any>({})
+  const getShowHoverTitle = (showTitle: boolean | undefined, text: string) => {
+    if (showTitle === undefined) {
+      // 表示columns里没有设置，此时使用table的统一设置
+      if (props.title) {
+        return text
+      }
+    } else if (showTitle) {
+      return text
+    }
+    return ''
   }
-  const checkboxChange = () => {
-
+  const headMouseMove = (index: number, evt: React.MouseEvent) => {
+    //callbackChange('mouseMove', {evt: evt, index: index})
   }
-  const headMouseDown = (evt: any, sort: any) => {
-
+  const headMouseDown = (index: number, evt: React.MouseEvent) => {
+    callbackChange('mouseDown', {evt: evt, index: index})
+  }
+  const checkboxChange = (val: boolean | string) => {
+    callbackChange('checkboxChange', val)
   }
   const sortClick = (prop: string, order: string) => {
-
+    const newVal = {...sortBy, [sortBy[prop]]: order}
+    setSortBy(newVal)
+    callbackChange('sortClick', newVal)
   }
-  return (<thead ref={el}>
-
-  {headMaxLayerArr.map((thLayer: string, index: number) =>
+  const callbackChange = (type: string, val: any) => {
+    props.event(type, val)
+  }
+  // 由table组件调用，固定表头滚动时
+  const [cssValue, setCssValue] = useState<{ transform?: string; className?: string }>({})
+  const scrollTop = (scrollTop: number) => {
+    if (scrollTop) {
+      setCssValue({
+        transform: `translateY(${scrollTop}px) translateZ(100px)`,
+        className: 'transform'
+      })
+    } else {
+      setCssValue({
+        transform: ``,
+        className: ''
+      })
+    }
+  }
+  useImperativeHandle(ref, () => ({scrollTop}))
+  return (<thead style={{transform: cssValue.transform}} className={classNames(cssValue.className)}>
+  {props.layer.map((thLayer: number) =>
   <tr key={thLayer} className={classNames({drag: props.drag})}>
-    {getColumnsFilter(index).map((th: any, thIndex: number) =>
+    {props.columns.map((th: ColumnsPropsAdd, thIndex: number) =>
+    th._layer === thLayer ?
     <th
     key={thIndex}
     className={classNames(th.fixed, th.className)}
     style={{textAlign: th.align}}
-    title={getShowHoverTitle(th)}
-    colspan={th.colspan}
-    rowspan={th.rowspan}
-    onMousemove={() => headMouseMove(this, thIndex)}
+    title={getShowHoverTitle(th.title, th.label || '')}
+    colSpan={th._colSpan}
+    rowSpan={th._rowSpan}
+    onMouseMove={headMouseMove.bind(this, thIndex)}
     >
       {th.type === 'selection' ?
       <Checkbox
-      v-model="state.checkboxChecked"
       className={classNames({'some-select': selectChecked === 2})}
-      value="1"
+      checked={selectChecked === 1}
       onChange={checkboxChange}
       /> : ''}
       {th.type !== 'selection' ?
       <>
-        {/*<table-header
-        v-if="th.slots && th.slots.header"
-        data="th"
-        index="thIndex"
-        />*/}
-        {/*<span v-else>{{th.label}}</span>*/}
+        {th.label}
         {th.sortBy ?
         <span className="caret-wrapper">
     <i
@@ -93,9 +112,9 @@ const TableHeader = forwardRef((props: Props, ref: React.Ref<TableHeaderRef>) =>
       {props.drag && th.drag ?
       <a
       className="drag-line"
-      onMouseDown={() => headMouseDown(this, thIndex)}
+      onMouseDown={headMouseDown.bind(this, thIndex)}
       /> : ''}
-    </th>)}
+    </th> : '')}
   </tr>)}
   </thead>)
 })
