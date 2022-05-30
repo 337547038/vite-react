@@ -14,6 +14,7 @@ import {SelectDown} from '../packages/selectDown'
 import {Select} from '../packages/select'
 import {Switch} from '../packages/switch'
 import {Field, FormItem} from '../packages/formItem'
+import {Loading} from "../packages/loading";
 
 interface ButtonProps {
   name: string
@@ -33,7 +34,7 @@ const App: React.FC<ButtonProps> = (props) => {
     //setDefaultValue(['a5', 'a1', 'a3'])
     //setOptions([...option])
     //setDisabled(true)
-    setValue('true')
+    setValue(!value)
   }
 
   const onChange = (val: string[]) => {
@@ -59,12 +60,11 @@ const App: React.FC<ButtonProps> = (props) => {
   ]
   const inputData = {defaultValue: 'abc'}
   return (
-  <div className="docs-demo">
+  <div className="docs-demo0">
     <Q1></Q1>
-    {/*<Select defaultValue="2" placeholder="请选择" options={options} clear={true}/>
-    <Field type="input" data={inputData} onChange={onChange} defaultValue={value} />
-    <FormItem label="input" type="input" data={inputData} defaultValue={value} onChange={onChange}/>
-    <p><Button onClick={onClick}>模拟数据变化</Button></p>*/}
+    {/*<Field type="input" data={inputData} onChange={onChange} defaultValue={value} />
+    <FormItem label="input" type="input" data={inputData} defaultValue={value} onChange={onChange}/>*/}
+    <p><Button onClick={onClick}>模拟数据变化</Button></p>
   </div>)
 
 };

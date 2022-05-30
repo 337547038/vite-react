@@ -1,0 +1,53 @@
+interface ObjKey {
+  [key: string]: any
+}
+
+export interface ColumnsProps {
+  prop: string // 参数，同时当key使用
+  label?: string // 显示的th名称
+  width?: string
+  className?: string
+  align?: 'left' | 'center' | 'right' // 对齐方式，可选left/center/right
+  type?: 'selection' | 'index' | 'extend' // 可选selection（多选）/index序号
+  fixed?: 'left' | 'right' // 固定当前列，可选left/right
+  sortBy?: boolean, // 当前列显示排序按钮
+  title?: boolean, // 鼠标滑过单元格时是否显示title提示语
+  drag?: boolean, // 当前单元格允许拖动，仅在table设置drag＝true时有效
+  formatter?: (row: any, col: ColumnsProps, val: string) => void,
+  tooltip?: boolean | object //[Boolean, Object],
+  tag?: boolean | object //[Boolean, Object]
+  children?: ColumnsProps[]
+}
+
+export interface Props {
+  columns: ColumnsProps[]// 表头数据
+  data: ObjKey[]
+  height?: string // table的高，溢出显示滚动条，且表头固定
+  width?: string
+  className?: string
+  hover?: boolean // 鼠标悬停时的高亮
+  border?: boolean // 表格纵向边框
+  stripe?: boolean // 是否显示间隔斑马纹
+  ellipsis?: boolean
+  showHeader?: boolean // 是否显示表头
+  drag?: boolean // 允许拖动表头
+  dragLine?: boolean
+  dragWidth?: number[] // 拖动时的最小宽和最大宽限制，0为不限
+  title?: boolean //鼠标滑过单元格时显示title提示
+  emptyText?: string
+  rowColSpan?: () => void
+  hasChild?: boolean
+  lazyLoad?: () => void
+  extendToggle?: boolean // 默认展开扩展
+  // sortSingle?: boolean // 单个排序
+  pagination?: () => void // 分页相关参数
+  fixedBottomScroll?: boolean | string
+  selectClick?: (list: ObjKey[], checked: boolean, row?: ObjKey, index?: number) => void
+}
+
+export interface TableRef {
+  toggleSelection: (val: boolean) => void
+  getSelectAll: () => void
+  toggleRowSelection: (row: any, val: boolean) => void
+  clearSort: () => void
+}

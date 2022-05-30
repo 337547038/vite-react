@@ -11,11 +11,13 @@ import tableData from './demoJs.json'
 function Example() {
   const columns = [
     {
-      type: 'selection'
+      type: "selection" as const,
+      prop: 'sel'
     },
     {
-      type: 'index',
-      label: '序号'
+      type: 'index' as const,
+      label: '序号',
+      prop: 'index'
     },
     {
       prop: 'date',
@@ -31,7 +33,7 @@ function Example() {
     }
   ]
   return (<div className='demo-table'>
-    <Table data={tableData} columns={columns} />
+    <Table data={tableData} columns={columns}/>
   </div>)
 }
 
@@ -47,11 +49,13 @@ import tableData from './demoJs.json'
 function Example() {
   const columns = [
     {
-      type: 'selection'
+      type: 'selection',
+      prop: 'se'
     },
     {
       type: 'index',
-      label: '序号'
+      label: '序号',
+      prop: 'index'
     },
     {
       prop: 'date',
@@ -73,49 +77,25 @@ function Example() {
     }
   ]
   const delClick = () => {
-
+    console.log('del')
   }
   return (<div className='demo-table'>
-    <Table data={tableData} columns={columns} />
+    <Table data={tableData} columns={columns}/>
   </div>)
 }
 
 export default Example
 ```
 
-```vue demo
-<template>
-  <ak-table :data="tableData">
-    <ak-column label="日期" prop="date" />
-    <ak-column label="姓名" prop="name" />
-    <ak-column label="省份" prop="province" />
-    <ak-column label="城市" prop="city" />
-    <ak-column label="地址" prop="address" />
-    <ak-column label="邮编" prop="zip" />
-    <ak-column label="操作">
-      <template #default="scope">
-        <a @click="delClick(scope)">删除</a>
-      </template>
-    </ak-column>
-  </ak-table>
-</template>
-<script setup>
-  import tableData from './demoJs.json'
-  const delClick = (item) => {
-    alert(JSON.stringify(item))
-  }
-</script>
-```
-
 ### 添加序号和checkbox勾选
 
-`type="selection"`添加勾选框,`type="index"`添加序号,getSelectAll`方法可取已勾选行。支持按住`ctrl`键一次勾选或取消多个
+`type="selection"`添加勾选框,`type="index"`添加序号,getSelectAll`方法可取已勾选行。
 
 ```jsx
 import {Button} from '../button'
 import {Table} from './index'
+import type {TableRef} from "./index"
 import tableData from './demoJs.json'
-
 function Example() {
   const columns = [
     {
@@ -124,7 +104,8 @@ function Example() {
     },
     {
       type: 'index',
-      label: '序号'
+      label: '序号',
+      prop: 'index'
     },
     {
       prop: 'date',
@@ -139,25 +120,26 @@ function Example() {
       label: '地址'
     }
   ]
+  const tableEl=useRef<TableRef>(null)
 // 全选
   const allSelect = () => {
-    tableEl.value.toggleSelection(true)
+    tableEl.current?.toggleSelection(true)
   }
   // 取消全选
   const unSelect = () => {
-    tableEl.value.toggleSelection(false)
+    tableEl.current?.toggleSelection(false)
   }
   // 获取当前勾选的所有值
   const getSelect = () => {
-    const val = tableEl.value.getSelectAll()
+    const val = tableEl.current?.getSelectAll()
     console.log(val)
     alert(JSON.stringify(val))
   }
   // 选中或取消指定行
-  const toggleRowSelection = (bool) => {
+  const toggleRowSelection = (bool:boolean) => {
     const row = [tableData[1], tableData[2]]
     row.forEach((row) => {
-      tableEl.value.toggleRowSelection(row, bool)
+      tableEl.current?.toggleRowSelection(row, bool)
     })
   }
   return (<div className='demo-table'>
@@ -165,10 +147,10 @@ function Example() {
       <Button onClick={allSelect}>全选</Button>
       <Button onClick={unSelect}>取消全选</Button>
       <Button onClick={getSelect}>获取所选行</Button>
-      <Button onClick={toggleRowSelection(true)}>将第2,3条设为选中状态</Button>
-      <Button onClick={toggleRowSelection(false)}>取消第2,3条选中状态</Button>
+      <Button onClick={()=>toggleRowSelection(true)}>将第2,3条设为选中状态</Button>
+      <Button onClick={()=>toggleRowSelection(false)}>取消第2,3条选中状态</Button>
     </div>
-    <Table data={tableData} columns={columns} />
+    <Table data={tableData} columns={columns} ref={tableEl}/>
   </div>)
 }
 
@@ -186,11 +168,13 @@ import tableData from './demoJs.json'
 function Example() {
   const columns = [
     {
-      type: 'selection'
+      type: 'selection',
+      width: '50px'
     },
     {
       type: 'index',
-      label: '序号'
+      label: '序号',
+      prop: 'index'
     },
     {
       prop: 'date',
@@ -205,8 +189,9 @@ function Example() {
       label: '地址'
     }
   ]
+
   return (<div className='demo-table'>
-    <Table data={tableData} columns={columns} height="200px" />
+    <Table data={tableData} columns={columns} height="200px"/>
   </div>)
 }
 
@@ -226,31 +211,39 @@ function Example() {
     {
       type: 'selection',
       fixed: 'left',
-      width: '50px'
+      width: '50px',
+      className:'cls'
     },
     {
       type: 'index',
       label: '序号',
-      width: '50px'
+      width: '50px',
+      prop: 'index'
     },
     {
       prop: 'date',
       label: '日期',
-      width: '80px'
+      width: '120px'
     },
     {
       prop: 'name',
       label: '姓名',
-      width: '100px'
+      width: '150px'
     },
     {
       prop: 'address',
       label: '地址',
-      width: '150px'
+      width: '300px'
+    },
+    {
+      prop: 'zip',
+      label: '邮箱',
+      width: '100px',
+      fixed:'right'
     }
   ]
   return (<div className='demo-table'>
-    <Table data={tableData} columns={columns} height="200px" width="600px" />
+    <Table data={tableData} columns={columns} height="200px" width="600px"/>
   </div>)
 }
 
@@ -292,7 +285,7 @@ function Example() {
     alert(JSON.stringify(obj))
   }
   return (<div className='demo-table'>
-    <Table data={tableData} columns={columns} sortChange={sortChange} />
+    <Table data={tableData} columns={columns} sortChange={sortChange}/>
   </div>)
 }
 
@@ -337,7 +330,7 @@ function Example() {
     alert(JSON.stringify(obj))
   }
   return (<div className='demo-table'>
-    <Table data={tableData} columns={columns} dragChange={dragChange} />
+    <Table data={tableData} columns={columns} dragChange={dragChange}/>
   </div>)
 }
 
@@ -394,14 +387,14 @@ function Example() {
       <Button onClick={() => onBtnClick('dragLine')}>拖动改变列宽时垂直线:{state.dragLine}</Button>
     </div>
     <Table
-      data={tableData}
-      columns={columns}
-      showHeader={state.showHeader}
-      hover={state.hover}
-      border={state.border}
-      stripe={state.stripe}
-      ellipsis={state.ellipsis}
-      drag-line={state.dragLine} />
+    data={tableData}
+    columns={columns}
+    showHeader={state.showHeader}
+    hover={state.hover}
+    border={state.border}
+    stripe={state.stripe}
+    ellipsis={state.ellipsis}
+    drag-line={state.dragLine}/>
   </div>)
 }
 
@@ -450,7 +443,7 @@ function Example() {
     }
   ]
   return (<div className='demo-table'>
-    <Table data={tableData} columns={columns} hasChild={true} />
+    <Table data={tableData} columns={columns} hasChild={true}/>
   </div>)
 }
 
@@ -496,7 +489,7 @@ function Example() {
     }
   ]
   return (<div className='demo-table'>
-    <Table data={tableData} columns={columns} hasChild={true} />
+    <Table data={tableData} columns={columns} hasChild={true}/>
   </div>)
 }
 
@@ -554,7 +547,7 @@ function Example() {
     }, 500)
   }
   return (<div className='demo-table'>
-    <Table data={tableData} columns={columns} hasChild={true} lazyLoad={lazyLoad} />
+    <Table data={tableData} columns={columns} hasChild={true} lazyLoad={lazyLoad}/>
   </div>)
 }
 
@@ -598,7 +591,7 @@ function Example() {
     }
   }
   return (<div className='demo-table'>
-    <Table data={tableData} columns={columns} rowColSpan={rowColSpan} />
+    <Table data={tableData} columns={columns} rowColSpan={rowColSpan}/>
   </div>)
 }
 
@@ -663,7 +656,7 @@ function Example() {
 
   }
   return (<div className='demo-table'>
-    <Table data={tableData} columns={columns} />
+    <Table data={tableData} columns={columns}/>
   </div>)
 }
 
@@ -708,7 +701,7 @@ function Example() {
     }
   }
   return (<div className='demo-table'>
-    <Table data={tableData} columns={columns} pagination={pagination} />
+    <Table data={tableData} columns={columns} pagination={pagination}/>
   </div>)
 }
 
@@ -748,7 +741,7 @@ function Example() {
     }
   ]
   return (<div className='demo-table'>
-    <Table data={tableData} columns={columns} />
+    <Table data={tableData} columns={columns}/>
   </div>)
 }
 
@@ -790,7 +783,7 @@ function Example() {
     }
   ]
   return (<div className='demo-table'>
-    <Table data={tableData} columns={columns} />
+    <Table data={tableData} columns={columns}/>
   </div>)
 }
 
