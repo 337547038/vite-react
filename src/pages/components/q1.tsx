@@ -18,44 +18,17 @@ import tableData from '../../packages/table/demoJs.json'
 
 import type {TableRef} from "../../packages/table/types";
 
+import {Tooltip} from '../../packages/tooltip'
+
 function Example() {
-  const columns = [
-    {
-      type: 'selection',
-      fixed: 'left',
-      width: '50px',
-      className:'cls'
-    },
-    {
-      type: 'index',
-      label: '序号',
-      width: '50px',
-      prop: 'index'
-    },
-    {
-      prop: 'date',
-      label: '日期',
-      width: '120px'
-    },
-    {
-      prop: 'name',
-      label: '姓名',
-      width: '150px'
-    },
-    {
-      prop: 'address',
-      label: '地址',
-      width: '300px'
-    },
-    {
-      prop: 'zip',
-      label: '邮箱',
-      width: '100px',
-      fixed:'right'
-    }
-  ]
-  return (<div className='demo-table'>
-    <Table data={tableData} columns={columns} height="200px" width="600px"/>
+  return (<div className='demo-tooltip' style={{margin: '150px'}}>
+    <Tooltip
+    trigger='click'
+    direction="top"
+    delay={300}
+    content='这里是提示内容，鼠标可以移动到上面，提示内容不会消失，可实现从这里点击跳转链接等'>
+      <Button>设置延时关闭</Button>
+    </Tooltip>
   </div>)
 }
 

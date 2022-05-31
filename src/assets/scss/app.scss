@@ -87,6 +87,37 @@ table {width: 100%;border-spacing: 0; border-collapse: collapse;border: 1px soli
 .demo-loading{
   .item{width: 100px;float: left;margin-right: 10px;display: flex;height: 100px}
 }
+.demo-tooltip{
+
+  .demo {margin-bottom: 30px}
+
+  .demo span {
+    display: inline-block;
+    vertical-align: middle;
+    width: 55px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    background: #f7f7f7;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all .5s;
+    margin-right: 30px}
+
+  .demo span:hover {}
+
+  .tooltip-icon {
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    font-style: normal;
+    background: #ddd;
+    display: inline-block;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-right: 30px}
+}
 ////////https://reactcommunity.org/react-transition-group/css-transition
 //.CSSTransition{display: none}
 //.my-node-enter {

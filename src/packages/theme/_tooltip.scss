@@ -34,3 +34,18 @@
     .arrow { right: 15px; top: -6px;}
   }
 }
+// 动画
+.tooltip-fade-enter{
+  animation: tooltipFadeIn .3s both;
+}
+.tooltip-fade-exit{
+  animation: tooltipFadeOut .3s both;
+}
+@keyframes tooltipFadeIn {
+  0%{opacity: 0}
+  100%{opacity: 1}
+}
+@keyframes tooltipFadeOut {
+  0%{opacity: 1}
+  100%{opacity: 0}
+}
