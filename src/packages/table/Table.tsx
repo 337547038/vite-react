@@ -99,7 +99,6 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
       }
     })
     setNewColumns([...temp])
-    console.log(temp)
     const tempLayer = []
     for (let i = 0; i < maxLayer; i++) {
       tempLayer.push(i + 1)
@@ -132,7 +131,7 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
   // 事件
   // 事件1.td中checkbox勾选事件 this.item.index
   const checkboxChange = (row: ObjKey, index: number, val: boolean | string) => {
-    console.log(row, val, index)
+    // console.log(row, val, index)
     let newValue = []
     if (val) {
       // 将当前行追加到已勾选
@@ -383,6 +382,7 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
   useEffect(() => {
     console.log('数据改变')
     setExtendStatus({})
+    setTableData([...props.data])
     if (props.fixedBottomScroll) {
       if (typeof props.fixedBottomScroll === 'string') {
         const scrollEl = document.querySelector(props.fixedBottomScroll)
@@ -401,7 +401,6 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
         window.removeEventListener('resize', scrollFixedBottom)
       }
     }
-    setTableData([...props.data])
   }, [props.data])
   // 扩展方法
   const [extendStatus, setExtendStatus] = useState<{ [key: number]: boolean }>({})
@@ -431,7 +430,7 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
   }
   // 固定底部滚动条
   const scrollFixedBottom = () => {
-    console.log('scrollFixedBottom')
+    // console.log('scrollFixedBottom')
     if (!props.fixedBottomScroll) {
       return
     }
@@ -446,7 +445,7 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
       const fel: any = document.querySelector(props.fixedBottomScroll)
       if (fel) {
         innerHeight = fel.offsetHeight + 20
-        console.log(innerHeight)
+        // console.log(innerHeight)
       }
     }
     //console.log(tableBodyWrapDom?.classList)
@@ -476,10 +475,30 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
   const onClickTd = (row: ObjKey, column: ColumnsProps, rowIndex: number, columnIndex: number) => {
     props.cellClick && props.cellClick(row, column, rowIndex, columnIndex)
   }
+  // 合并相关
+  const getRowColSpan = (rowIndex: number, colIndex: number) => {
+    let temp: { rowSpan?: number, colSpan?: number, style?: ObjKey } = {}
+    props.rowColSpan && props.rowColSpan.forEach(item => {
+      if (rowIndex === item.row && colIndex === item.col) {
+        if (item.rowSpan === 0 || item.colSpan === 0) {
+          temp.style = {display: 'none'}
+        } else{
+          if (item.rowSpan && item.rowSpan > 1) {
+            temp.rowSpan = item.rowSpan
+          }
+          if (item.colSpan && item.colSpan > 1) {
+            temp.colSpan = item.colSpan
+          }
+        }
+      }
+    })
+    return temp
+  }
   const renderTr = (item: ObjKey, index: number, isChild?: boolean) => {
     return (<tr key={index} onClick={() => onClickTr(item, index)}>
       {renderColumns.map((col: ColumnsProps, colIndex: number) =>
         <td
+          {...getRowColSpan(index, colIndex)}
           className={classNames(col.fixed, col.className)}
           key={(col.prop || Math.floor(Math.random() * 100)) + index.toString()}
           title={showHoverTitle(col.title, item[col.prop], !col.tooltip)}

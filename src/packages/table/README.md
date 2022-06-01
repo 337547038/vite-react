@@ -569,10 +569,10 @@ function Example() {
 export default Example
 ```
 
-### 合并行或列（待实现）
+### 合并行或列
 
-多行或多列共用一个数据时，可以合并行或列。通过给传入`rowColSpan`方法可以实现合并行或列，方法的参数(当前行号`rowIndex`,当前列号`columnIndex`,当前行`row`,当前列`column`)
-四个属性。该函数返回一个包含两个数字的数组，第一个`rowspan`，第二个`colspan`，即向纵向和横向合并多少个单元格。
+多行或多列共用一个数据时，可以合并行或列。通过给设置`rowColSpan`可以实现合并行或列，参数(当前行号`row`,当前列号`col`,合并的列数`rowSpan`,合并的行数`colSpan`)
+四个属性。当`rowSpan`或`colSpan`为0时，表示隐藏当前行或列
 
 ```jsx
 import {Table} from './index'
@@ -581,11 +581,13 @@ import tableData from './demoJs.json'
 function Example() {
   const columns = [
     {
-      type: 'selection'
+      type: 'selection',
+      prop: 'select'
     },
     {
       type: 'index',
-      label: '序号'
+      label: '序号',
+      prop: 'index'
     },
     {
       prop: 'date',
@@ -600,13 +602,30 @@ function Example() {
       label: '地址'
     }
   ]
-  const rowColSpan = (rowIndex, columnIndex) => {
-    if (rowIndex === 0 && columnIndex === 1) {
-      return [2, 3] // 表示在rowIndex=0行，columnIndex = 1列位置，向下合并两个和向右合并3个单元格
+  const rowColSpan = [
+    {
+      row: 0, // 将第一行第2，3单元格合并
+      col: 1,
+      colSpan: 2
+    },
+    {
+      row: 0, // 对应于前面将第一行第3单元格设置不显示
+      col: 2,
+      colSpan: 0
+    },
+    {
+      row: 2,
+      col: 3,
+      rowSpan: 2
+    },
+    {
+      row: 3,
+      col: 3,
+      rowSpan: 0
     }
-  }
+  ]
   return (<div className='demo-table'>
-    <Table data={tableData} columns={columns} rowColSpan={rowColSpan}/>
+    <Table data={tableData} columns={columns} rowColSpan={rowColSpan} />
   </div>)
 }
 
@@ -890,12 +909,12 @@ export default Example
 
 ### Table Methods
 
-| 参数               | 类型        |
-|----------|--------------|
-| getSelectAll       | 返回所有选中的行|
-| toggleRowSelection | 用于多选表格，切换某一行的选中状态，如果使用了第二个参数，则是设置这一行选中与否（selected 为 true 则选中） row, selected |
-| toggleSelection | 用于多选表格，切换所有行的选中/清空状态,true为选中，false取消选中，默认false|
-| clearSort          | 用于清空排序条件|
+| 参数                 | 类型                                                                            |
+|--------------------|-------------------------------------------------------------------------------|
+| getSelectAll       | 返回所有选中的行                                                                      |
+| toggleRowSelection | 用于多选表格，切换某一行的选中状态，如果使用了第二个参数，则是设置这一行选中与否（selected 为 true 则选中） row, selected   |
+| toggleSelection    | 用于多选表格，切换所有行的选中/清空状态,true为选中，false取消选中，默认false                                |
+| clearSort          | 用于清空排序条件                                                                      |
 
 ### Table.Columns
 

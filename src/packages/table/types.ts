@@ -4,6 +4,13 @@ interface ObjKey {
   [key: string]: any
 }
 
+interface rowColType {
+  col: number
+  row: number
+  colSpan?: number
+  rowSpan?: number
+}
+
 export interface ColumnsProps {
   prop: string // 参数，同时当key使用
   label?: string // 显示的th名称
@@ -37,7 +44,7 @@ export interface Props {
   dragWidth?: number[] // 拖动时的最小宽和最大宽限制，0为不限
   title?: boolean //鼠标滑过单元格时显示title提示
   emptyText?: string
-  rowColSpan?: (rowIndex: number, colIndex: number) => void
+  rowColSpan?: rowColType[]
   hasChild?: boolean
   lazyLoad?: (row: ObjKey, callback: (child: any) => void) => void
   extendToggle?: boolean // 默认展开扩展
