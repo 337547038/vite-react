@@ -1,33 +1,16 @@
 import React, {ReactElement, useCallback, useState, useRef, useEffect} from "react";
-import {FormItem, Field} from '../../packages/formItem'
-import {Input} from '../../packages/input'
-import {Form} from '../../packages/form'
-import {Button} from "../../packages/button";
-import type {FormRef} from "../../packages/form";
-import type {FormItemRef} from "../../packages/formItem";
-import type {InputRef} from "../../packages/input";
-import {RadioGroup} from '../../packages/radio'
-import {CheckboxGroup, Checkbox} from '../../packages/checkbox'
-import {Switch} from '../../packages/switch'
-import {Select} from '../../packages/select'
-import {Textarea} from '../../packages/textarea'
 import {Table} from '../../packages/table'
-import {Dialog} from '../../packages/dialog'
 import tableData from '../../packages/table/demoJs.json'
-
-import {CSSTransition} from 'react-transition-group';
-
-import type {TableRef} from "../../packages/table/types";
-
-
 function Example() {
   const columns = [
     {
-      type: 'selection'
+      type: 'selection' as const,
+      prop: 'select'
     },
     {
-      type: 'index',
-      label: '序号'
+      type: 'index' as const,
+      label: '序号',
+      prop: 'index'
     },
     {
       prop: 'date',
@@ -39,12 +22,32 @@ function Example() {
     },
     {
       prop: 'address',
-      label: '地址',
-      tooltip: {show: true, direction: 'left'}
+      label: '地址'
+    },
+    {
+      label: '操作',
+      prop: 'control',
+      formatter: (row:any) => {
+        return (<span onClick={() => row.tExtend()}>{
+          row.tStatus ? '收起' : '加载子级'
+        }</span>)
+      }
     }
   ]
+  const lazyLoad = (row:any, resolve:any) => {
+    // row 当前点击行信息
+    // 模拟请求加载
+    console.log('row')
+    setTimeout(() => {
+      const child = [
+        {name: '异步数据1', date: '2021'},
+        {name: '异步数据2', date: '2021'}
+      ]
+      resolve(child)
+    }, 500)
+  }
   return (<div className='demo-table'>
-    <Table data={tableData} columns={columns}/>
+    <Table data={tableData} columns={columns} hasChild={true} lazyLoad={lazyLoad} height='100px'/>
   </div>)
 }
 

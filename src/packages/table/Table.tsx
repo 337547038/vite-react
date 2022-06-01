@@ -3,9 +3,7 @@ import React, {
   useRef,
   useImperativeHandle,
   useState,
-  useContext,
   useEffect,
-  useCallback,
   Fragment
 } from 'react'
 import classNames from 'classnames'
@@ -17,6 +15,7 @@ import {debounce} from "../util"
 import {Checkbox} from "../checkbox";
 import {getOffset} from '../util/dom'
 import {Pagination} from '../pagination'
+import {Tooltip} from '../tooltip'
 
 
 interface ColumnsPropsAdd extends ColumnsProps {
@@ -49,6 +48,7 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
     isSetThWidth: false,
     mouseDown: false
   })
+  const [tableData, setTableData] = useState(props.data)
   // 已选择的行
   const [selectedRows, setSelectedRows] = useState<ObjKey[]>([])
   const tableEl = useRef<HTMLTableElement>(null) // 表格
@@ -59,7 +59,7 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
   const len = selectedRows.length
   if (len === 0) {
     selectChecked = 0 // 全不选
-  } else if (len === props.data.length) {
+  } else if (len === tableData.length) {
     selectChecked = 1 // 全选
   } else {
     selectChecked = 2
@@ -156,7 +156,7 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
     // boolean=true全选，false全不选
     if (bool) {
       // 用于多选表格，切换所有行的选中状态，这里应该是将当页面追加进来，实现跨页全选，后面优化
-      setSelectedRows([...props.data])
+      setSelectedRows([...tableData])
     } else {
       // 用于多选表格，清空用户的选择
       setSelectedRows([])
@@ -193,7 +193,7 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
     switch (type) {
       case 'checkboxChange':
         toggleSelection(val)
-        props.selectClick && props.selectClick(val ? props.data : [], val)
+        props.selectClick && props.selectClick(val ? tableData : [], val)
         break
       case 'mouseDown':
         mouseDown(val)
@@ -302,7 +302,11 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
   useImperativeHandle(ref, () => ({toggleSelection, getSelectAll, toggleRowSelection, clearSort}))
   // 事件处理结束
   // 鼠标滑过单元格时默认使用title提示
-  const showHoverTitle = (showTitle: boolean | undefined, text: string) => {
+  const showHoverTitle = (showTitle: boolean | undefined, text: string, tooltip: boolean) => {
+    if (!tooltip) {
+      // 有tooltip提示时不设置title
+      return ''
+    }
     if (showTitle === undefined) {
       // 表示columns里没有设置，此时使用table的统一设置
       if (title) {
@@ -316,37 +320,46 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
   // 固定表头
   const fixedHead = debounce(() => {
     console.log('fixedHead')
-    // 如果有高和表头，则固定表头
-    if (props.height && showHeader && tableDiv.current) {
-      tableDiv.current?.addEventListener('scroll', scrollHandle, false)
-    }
-    // 目前初始时获取到的表格宽(tableWidth)有问题，需滚动下才能获取实际的宽，加个setTimeout处理
+    // 初始时获取到的表格宽(tableWidth)有问题，需滚动下才能获取实际的宽，加个setTimeout处理
     setTimeout(() => {
       fixedRight(0) // 初始化时横向滚动条在0位置
     }, 0)
   })
   // 固定表头 监听滚动事件
   const scrollHandle = () => {
-    const scrollTop = tableDiv.current?.scrollTop || 0
-    const scrollLeft = tableDiv.current?.scrollLeft || 0
-    tableTh.current?.scrollTop(scrollTop)
-    // 左右滚动固定
-    const fixedLeft: any = tableDiv.current?.querySelectorAll('.left')
-    if (fixedLeft && fixedLeft.length > 0) {
-      // left
-      if (scrollLeft > 0) {
-        for (let i = 0, len = fixedLeft.length; i < len; i++) {
-          fixedLeft[i].style.transform = `translateX(${scrollLeft}px) translateZ(91px)`
-          fixedLeft[i].style.webkitTransform = `translateX(${scrollLeft}px) translateZ(91px)`
-        }
-      } else {
-        for (let i = 0, len = fixedLeft.length; i < len; i++) {
-          fixedLeft[i].style.transform = ''
-          fixedLeft[i].style.webkitTransform = ''
+    if (props.height && showHeader && tableDiv.current) {
+      const scrollTop = tableDiv.current?.scrollTop || 0
+      const scrollLeft = tableDiv.current?.scrollLeft || 0
+      tableTh.current?.scrollTop(scrollTop)
+      // 左右滚动固定
+      const fixedLeft: any = tableDiv.current?.querySelectorAll('.left')
+      if (fixedLeft && fixedLeft.length > 0) {
+        // left
+        if (scrollLeft > 0) {
+          for (let i = 0, len = fixedLeft.length; i < len; i++) {
+            fixedLeft[i].style.transform = `translateX(${scrollLeft}px) translateZ(91px)`
+            fixedLeft[i].style.webkitTransform = `translateX(${scrollLeft}px) translateZ(91px)`
+          }
+        } else {
+          for (let i = 0, len = fixedLeft.length; i < len; i++) {
+            fixedLeft[i].style.transform = ''
+            fixedLeft[i].style.webkitTransform = ''
+          }
         }
       }
+      fixedRight(scrollLeft)
+      // 监听表格滚到
+      if (typeof props.scroll === 'function') {
+        const tableHeight = tableDiv.current?.clientHeight // 窗口高度
+        const scrollHeight = tableDiv.current?.scrollHeight // 文档高度
+        let bottom = false
+        if (scrollTop + tableHeight >= scrollHeight - 3) {
+          // 到底部
+          bottom = true
+        }
+        props.scroll(scrollTop, bottom)
+      }
     }
-    fixedRight(scrollLeft)
   }
   const fixedRight = (scrollLeft: number) => {
     const fixedRight: any = tableDiv.current?.querySelectorAll('.right')
@@ -388,6 +401,7 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
         window.removeEventListener('resize', scrollFixedBottom)
       }
     }
+    setTableData([...props.data])
   }, [props.data])
   // 扩展方法
   const [extendStatus, setExtendStatus] = useState<{ [key: number]: boolean }>({})
@@ -402,7 +416,8 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
     // 异步加载子级
     if (props.hasChild && typeof props.lazyLoad === 'function') {
       props.lazyLoad(row, (child: ObjKey[]) => {
-        row.children = child // todo 这么添加进去不会引起示图重新渲染
+        row.children = child
+        setTableData([...tableData])
       })
     }
   }
@@ -455,13 +470,20 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
         tableBodyDom.offsetHeight - wrapHeight + 'px'
     }
   }
+  const onClickTr = (row: ObjKey, index: number) => {
+    props.rowClick && props.rowClick(row, index)
+  }
+  const onClickTd = (row: ObjKey, column: ColumnsProps, rowIndex: number, columnIndex: number) => {
+    props.cellClick && props.cellClick(row, column, rowIndex, columnIndex)
+  }
   const renderTr = (item: ObjKey, index: number, isChild?: boolean) => {
-    return (<tr key={index}>
-      {renderColumns.map((col: ColumnsProps) =>
+    return (<tr key={index} onClick={() => onClickTr(item, index)}>
+      {renderColumns.map((col: ColumnsProps, colIndex: number) =>
         <td
           className={classNames(col.fixed, col.className)}
           key={(col.prop || Math.floor(Math.random() * 100)) + index.toString()}
-          title={showHoverTitle(col.title, item[col.prop])}>
+          title={showHoverTitle(col.title, item[col.prop], !col.tooltip)}
+          onClick={() => onClickTd(item, col, index, colIndex)}>
           {col.type === 'selection' && !isChild ?
             <Checkbox
               checked={getSelectCheckbox(item)}
@@ -474,7 +496,8 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
                     tExtend: isChild ? undefined : extendToggle.bind(this, index, item),
                     tStatus: isChild ? undefined : getStatus(index)
                   }, col, item[col.prop], index) :
-                item[col.prop]
+                <Tooltip direction='top' disabled={!col.tooltip} {...col.tooltip}
+                         content={item[col.prop]}>{item[col.prop]}</Tooltip>
           }
         </td>
       )}
@@ -490,6 +513,7 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
         overflowY: props.height ? 'auto' : undefined,
         overflowX: props.width ? 'auto' : undefined
       }}
+      onScroll={scrollHandle}
     >
       <table
         ref={tableEl}
@@ -521,13 +545,13 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
             columns={newColumns}
             event={tableHeadEvent} /> : ''}
         <tbody>
-        {props.data.length === 0 ?
+        {tableData.length === 0 ?
           <tr>
             <td colSpan={renderColumns.length} className="empty">
               {emptyText}
             </td>
           </tr> :
-          props.data.map((item: ObjKey, index: number) =>
+          tableData.map((item: ObjKey, index: number) =>
             <Fragment key={index}>
               {renderTr(item, index)}
               {typeof props.expandable === 'function' && getStatus(index) ?
@@ -548,7 +572,7 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
       {Object.keys(pagination).length > 0 ?
         <Pagination
           {...props.pagination}
-          total={props.data?.length}
+          total={tableData?.length}
         /> : ''}
     </div>)
 })

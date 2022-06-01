@@ -1,4 +1,4 @@
-import React, {useContext, useRef, useState, useEffect} from 'react'
+import React, {useRef, useState, useEffect} from 'react'
 import classNames from 'classnames'
 import {prefixCls} from '../prefix'
 import ReactDOM from 'react-dom'
@@ -6,7 +6,7 @@ import {getOffset, getWindow} from "../util/dom";
 
 interface Props {
   children?: React.ReactNode
-  content?: string // rgb格式，初始值
+  content: string // 提示内容
   direction?: string
   maxWidth?: number
   delay?: number // 鼠标移开后延时移除时间，主要能够让鼠标移动提示文字上，单位毫秒
@@ -71,7 +71,7 @@ const Tooltip: React.FC<Props> = (props) => {
         break
       case 'top-right':
         style.right =
-        windowWidth - (offset.left + offset.width + propsX) + 'px'
+          windowWidth - (offset.left + offset.width + propsX) + 'px'
         style.bottom = bottom
         break
       case 'left':
@@ -97,7 +97,7 @@ const Tooltip: React.FC<Props> = (props) => {
         break
       case 'bottom-right':
         style.right =
-        windowWidth - (offset.left + offset.width + propsX) + 'px'
+          windowWidth - (offset.left + offset.width + propsX) + 'px'
         style.top = offset.top + offset.height + space + 'px'
         break
       default:
@@ -171,27 +171,31 @@ const Tooltip: React.FC<Props> = (props) => {
     }
   }, [])
   const TooltipHtml = (
-  <div
-  ref={tooltipEl}
-  className={classNames([`${prefixCls}-tooltip`, direction, cssClsTransition, props.className])}
-  style={tooltipStyle}
-  onClick={onClick}
-  >
-    <i className="arrow"/>
-    {props.content ?
-    <span>{props.content}</span> : ''}
-  </div>)
-  return (
-  <span
-  ref={el}
-  className={`${prefixCls}-tooltip-box`}
-  onMouseLeave={onMouseLeave}
-  onMouseEnter={onMouseEnter}
-  onClick={mouseClick}>
-    {props.children}
-    {visible && !props.disabled ?
-    (appendToBody ? ReactDOM.createPortal(TooltipHtml, document.body) : TooltipHtml)
-    : ''}
+    <div
+      ref={tooltipEl}
+      className={classNames([`${prefixCls}-tooltip`, direction, cssClsTransition, props.className])}
+      style={tooltipStyle}
+      onClick={onClick}
+    >
+      <i className="arrow" />
+      {props.content ?
+        <span>{props.content}</span> : ''}
+    </div>)
+  if (props.disabled) {
+    return (<>{props.children}</>)
+  } else {
+    return (
+      <span
+        ref={el}
+        className={`${prefixCls}-tooltip-box`}
+        onMouseLeave={onMouseLeave}
+        onMouseEnter={onMouseEnter}
+        onClick={mouseClick}>
+        {props.children}
+        {visible && !props.disabled ?
+          (appendToBody ? ReactDOM.createPortal(TooltipHtml, document.body) : TooltipHtml)
+          : ''}
   </span>)
+  }
 }
 export default Tooltip

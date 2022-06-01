@@ -1,3 +1,5 @@
+import React from 'react'
+
 interface ObjKey {
   [key: string]: any
 }
@@ -10,10 +12,10 @@ export interface ColumnsProps {
   align?: 'left' | 'center' | 'right' // 对齐方式，可选left/center/right
   type?: 'selection' | 'index' // 可选selection（多选）/index序号
   fixed?: 'left' | 'right' // 固定当前列，可选left/right
-  sortBy?: boolean, // 当前列显示排序按钮
-  title?: boolean, // 鼠标滑过单元格时是否显示title提示语
-  drag?: boolean, // 当前单元格允许拖动，仅在table设置drag＝true时有效
-  formatter?: (row: ObjKey, col: ColumnsProps, val: string, index: number) => void,
+  sortBy?: boolean // 当前列显示排序按钮
+  title?: boolean // 鼠标滑过单元格时是否显示title提示语
+  drag?: boolean // 当前单元格允许拖动，仅在table设置drag＝true时有效
+  formatter?: (row: ObjKey, col: ColumnsProps, val: string, index: number) => React.ReactNode
   tooltip?: boolean | object //[Boolean, Object],
   tag?: boolean | object //[Boolean, Object]
   children?: ColumnsProps[]
@@ -37,7 +39,7 @@ export interface Props {
   emptyText?: string
   rowColSpan?: (rowIndex: number, colIndex: number) => void
   hasChild?: boolean
-  lazyLoad?: (row: any, callback: (child: any) => void) => void
+  lazyLoad?: (row: ObjKey, callback: (child: any) => void) => void
   extendToggle?: boolean // 默认展开扩展
   // sortSingle?: boolean // 单个排序
   pagination?: object // 分页相关参数
@@ -46,6 +48,9 @@ export interface Props {
   sortChange?: (row: ObjKey) => void
   dragChange?: (val: string[]) => void
   expandable?: (row: ObjKey) => any
+  scroll?: (top: number, isBottom: boolean) => void
+  rowClick?: (row: ObjKey, index: number) => void
+  cellClick?: (row: ObjKey, column: ColumnsProps, rowIndex: number, columnIndex: number) => void
 }
 
 export interface TableRef {

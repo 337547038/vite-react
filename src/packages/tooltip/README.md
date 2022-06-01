@@ -10,7 +10,7 @@ function Example() {
     <div className="demo">
       <Tooltip content="这是提示内容这是提示内容">上左</Tooltip>
       <Tooltip
-      content="这是提示内容这是提示内容，direction＝'top'"
+      content="这是提示内容这是提示内容，direction='top'"
       direction="top">上边</Tooltip>
       <Tooltip
       content="这是提示内容direction='top-right'"
