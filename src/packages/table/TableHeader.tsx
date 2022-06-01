@@ -22,6 +22,7 @@ interface Props {
 
 export interface TableHeaderRef {
   scrollTop: (val: number) => void
+  clearSort: () => void
 }
 
 const TableHeader = forwardRef((props: Props, ref: React.Ref<TableHeaderRef>) => {
@@ -29,7 +30,7 @@ const TableHeader = forwardRef((props: Props, ref: React.Ref<TableHeaderRef>) =>
     selectChecked = 0
   } = props
 
-  const [sortBy, setSortBy] = useState<any>({})
+  const [sortBy, setSortBy] = useState<{ [key: string]: string }>({})
   const getShowHoverTitle = (showTitle: boolean | undefined, text: string) => {
     if (showTitle === undefined) {
       // 表示columns里没有设置，此时使用table的统一设置
@@ -42,7 +43,9 @@ const TableHeader = forwardRef((props: Props, ref: React.Ref<TableHeaderRef>) =>
     return ''
   }
   const headMouseMove = (index: number, evt: React.MouseEvent) => {
-    //callbackChange('mouseMove', {evt: evt, index: index})
+    if (props.drag) {
+      callbackChange('mouseMove', {evt: evt, index: index})
+    }
   }
   const headMouseDown = (index: number, evt: React.MouseEvent) => {
     callbackChange('mouseDown', {evt: evt, index: index})
@@ -51,7 +54,7 @@ const TableHeader = forwardRef((props: Props, ref: React.Ref<TableHeaderRef>) =>
     callbackChange('checkboxChange', val)
   }
   const sortClick = (prop: string, order: string) => {
-    const newVal = {...sortBy, [sortBy[prop]]: order}
+    const newVal = {...sortBy, [prop]: order}
     setSortBy(newVal)
     callbackChange('sortClick', newVal)
   }
@@ -73,49 +76,58 @@ const TableHeader = forwardRef((props: Props, ref: React.Ref<TableHeaderRef>) =>
       })
     }
   }
-  useImperativeHandle(ref, () => ({scrollTop}))
+  // 清空排序
+  const clearSort = () => {
+    setSortBy({})
+  }
+  // 是否允许拖动
+  const isDrag = (drag: boolean | undefined) => {
+    if (props.drag) {
+      return drag !== false
+    } else {
+      return false
+    }
+  }
+  useImperativeHandle(ref, () => ({scrollTop, clearSort}))
   return (<thead style={{transform: cssValue.transform}} className={classNames(cssValue.className)}>
   {props.layer.map((thLayer: number) =>
-  <tr key={thLayer} className={classNames({drag: props.drag})}>
-    {props.columns.map((th: ColumnsPropsAdd, thIndex: number) =>
-    th._layer === thLayer ?
-    <th
-    key={thIndex}
-    className={classNames(th.fixed, th.className)}
-    style={{textAlign: th.align}}
-    title={getShowHoverTitle(th.title, th.label || '')}
-    colSpan={th._colSpan}
-    rowSpan={th._rowSpan}
-    onMouseMove={headMouseMove.bind(this, thIndex)}
-    >
-      {th.type === 'selection' ?
-      <Checkbox
-      className={classNames({'some-select': selectChecked === 2})}
-      checked={selectChecked === 1}
-      onChange={checkboxChange}
-      /> : ''}
-      {th.type !== 'selection' ?
-      <>
-        {th.label}
-        {th.sortBy ?
-        <span className="caret-wrapper">
-    <i
-    className={classNames('sort-caret asc', {active: sortBy[th.prop] === 'asc'})}
-    onClick={() => sortClick(th.prop, 'asc')}
-    />
-    <i
-    className={classNames("sort-caret desc", {active: sortBy[th.prop] === 'desc'})}
-    onClick={() => sortClick(th.prop, 'desc')}
-    />
-    </span> : ''}
-      </> : ''}
-      {props.drag && th.drag ?
-      <a
-      className="drag-line"
-      onMouseDown={headMouseDown.bind(this, thIndex)}
-      /> : ''}
-    </th> : '')}
-  </tr>)}
+    <tr key={thLayer} className={classNames({drag: props.drag})}>
+      {props.columns.map((th: ColumnsPropsAdd, thIndex: number) =>
+        th._layer === thLayer ?
+          <th
+            key={thIndex}
+            className={classNames(th.fixed, th.className)}
+            style={{textAlign: th.align}}
+            title={getShowHoverTitle(th.title, th.label || '')}
+            colSpan={th._colSpan}
+            rowSpan={th._rowSpan}
+            onMouseMove={headMouseMove.bind(this, thIndex)}
+          >
+            {th.type === 'selection' ?
+              <Checkbox
+                className={classNames({'some-select': selectChecked === 2})}
+                checked={selectChecked === 1}
+                onChange={checkboxChange}
+              /> : ''}
+            {th.type !== 'selection' ?
+              <>
+                {th.label}
+                {th.sortBy ?
+                  <span className="caret-wrapper">
+                    <i className={classNames("sort-caret asc icon-down", {active: sortBy[th.prop] === 'asc'})}
+                       onClick={() => sortClick(th.prop, 'asc')} />
+                   <i className={classNames('sort-caret desc icon-down', {active: sortBy[th.prop] === 'desc'})}
+                      onClick={() => sortClick(th.prop, 'desc')}
+                   />
+                  </span> : ''}
+              </> : ''}
+            {isDrag(th.drag) ?
+              <a
+                className="drag-line"
+                onMouseDown={headMouseDown.bind(this, thIndex)}
+              /> : ''}
+          </th> : '')}
+    </tr>)}
   </thead>)
 })
 TableHeader.displayName = 'TableHeader'

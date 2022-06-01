@@ -1,4 +1,13 @@
-import React, {forwardRef, useRef, useImperativeHandle, useState, useContext, useEffect, useCallback} from 'react'
+import React, {
+  forwardRef,
+  useRef,
+  useImperativeHandle,
+  useState,
+  useContext,
+  useEffect,
+  useCallback,
+  Fragment
+} from 'react'
 import classNames from 'classnames'
 import {prefixCls} from '../prefix'
 import TableHead from './TableHeader'
@@ -6,6 +15,8 @@ import type {TableHeaderRef} from './TableHeader'
 import type {Props, TableRef, ColumnsProps} from './types'
 import {debounce} from "../util"
 import {Checkbox} from "../checkbox";
+import {getOffset} from '../util/dom'
+import {Pagination} from '../pagination'
 
 
 interface ColumnsPropsAdd extends ColumnsProps {
@@ -13,6 +24,10 @@ interface ColumnsPropsAdd extends ColumnsProps {
   _rowSpan?: number
   _colSpan?: number
   _tProps: string
+}
+
+interface ObjKey {
+  [key: string]: any
 }
 
 const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
@@ -30,11 +45,13 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
     pagination = {}
   } = props
   const [state, setState] = useState({
-    stateHeight: props.height || ''
+    stateHeight: props.height || '',
+    isSetThWidth: false,
+    mouseDown: false
   })
   // 已选择的行
-  const [selectedRows, setSelectedRows] = useState<any[]>([])
-  const tableEl = useRef(null) // 表格
+  const [selectedRows, setSelectedRows] = useState<ObjKey[]>([])
+  const tableEl = useRef<HTMLTableElement>(null) // 表格
   const tableTh = useRef<TableHeaderRef>(null) // 表头
   const tableDiv = useRef<HTMLDivElement>(null) // 表格外层div
   let selectChecked = 0
@@ -55,6 +72,7 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
   const [renderColumns, setRenderColumns] = useState<ColumnsProps[]>([]) // 用于遍历表格列数
   const [newColumns, setNewColumns] = useState<ColumnsPropsAdd[]>([]) // 格式化后的表头数据
   const [colWidth, setColWidth] = useState<string[]>([]) // 列宽
+  const colWidthRef = useRef<string[]>([]) // 列宽，多存一个
   const colWidthTemp: string[] = []
   const temp: ColumnsPropsAdd[] = []
   const formatColumns = debounce(() => {
@@ -112,8 +130,9 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
   }
   // 表头数据处理结束
   // 事件
-  // 事件1.td中checkbox勾选事件
-  const checkboxChange = (row: any, val: boolean | string, index: number) => {
+  // 事件1.td中checkbox勾选事件 this.item.index
+  const checkboxChange = (row: ObjKey, index: number, val: boolean | string) => {
+    console.log(row, val, index)
     let newValue = []
     if (val) {
       // 将当前行追加到已勾选
@@ -129,7 +148,7 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
     //emits('selectClick', state.selectedRows, bool, row, index)
   }
   // 事件2.返回初始勾选状态
-  const getSelectCheckbox = (row: any) => {
+  const getSelectCheckbox = (row: ObjKey) => {
     return selectedRows.includes(row)
   }
   // 事件3.全选或全不选事件，使用ref调用
@@ -148,7 +167,7 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
     return selectedRows
   }
   // 5.事件选中或取消行
-  const toggleRowSelection = (row: any, val: boolean) => {
+  const toggleRowSelection = (row: ObjKey, val: boolean) => {
     // 用于多选表格，切换某一行的选中状态，如果使用了第二个参数，则是设置这一行选中与否（selected 为 true 则选中）row, selected
     const index = selectedRows.indexOf(row)
     if (!val) {
@@ -167,7 +186,7 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
   }
   // 事件6.用于清空排序
   const clearSort = () => {
-    console.log('clearSort')
+    tableTh.current?.clearSort()
   }
   // 6.表头全选/拖动列宽/排序等事件
   const tableHeadEvent = (type: string, val: any) => {
@@ -177,17 +196,109 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
         props.selectClick && props.selectClick(val ? props.data : [], val)
         break
       case 'mouseDown':
-        //mouseDown(obj)
+        mouseDown(val)
         break
       case 'mouseMove':
-        // mouseMove(obj)
+        mouseMove(val)
         break
       case 'sortClick':
-        //emits('sortChange', obj)
+        props.sortChange && props.sortChange(val)
         break
       default:
     }
   }
+  // 7.表头点击拖动事件
+  const dragHead = useRef<any>({}) // 临时存放表头拖动信息
+  const mouseDown = (obj: any) => {
+    if (!drag) {
+      return
+    }
+    if (!state.isSetThWidth) {
+      // 重新设置表头的实际宽，仅在第一次点击时重置
+      setTHWidth()
+      document.addEventListener('mouseup', headMouseUp)
+    }
+    const newState = {isSetThWidth: true, mouseDown: true}
+    setState({...state, ...newState})
+    const oldWidth = colWidth[obj.index] || colWidthRef.current[obj.index] // colWidth存在没更新取不到值的情况
+    dragHead.current = {
+      mouseDown: true,
+      oldX: obj.evt.pageX,
+      oldWidth: parseInt(oldWidth.replace('px', ''), 10) || 0, // 拖动前的单元格宽
+      index: obj.index
+    }
+    setTableDragLine(obj.evt)
+    // 不让选择
+    obj.evt.preventDefault()
+  }
+  const setTHWidth = () => {
+    if (!drag) {
+      return
+    }
+    const th = tableDiv.current?.querySelectorAll('th')
+    if (th) {
+      colWidthRef.current = []
+      th.forEach((item: HTMLElement) => {
+        colWidthRef.current.push(item.offsetWidth + 'px')
+      })
+      setColWidth([...colWidthRef.current])
+    }
+  }
+  // 拖动时的垂直线
+  const setTableDragLine = (event: MouseEvent) => {
+    setTimeout(() => {
+      // 当前表格偏移位置
+      const tableOffset = getOffset(tableDiv.current as HTMLElement)
+      let dragLine: any = tableDiv.current?.querySelector('.table-drag-line')
+      if (dragLine) {
+        dragLine.style.left = event.pageX - tableOffset.left + 'px'
+        dragLine.style.height = tableOffset.height + 'px'
+      }
+    })
+  }
+  const mouseMove = (obj: any) => {
+    if (!drag) {
+      return
+    }
+    const event = obj.evt
+    let newWidth = dragHead.current?.oldWidth + (event.pageX - dragHead.current?.oldX) // 移动鼠标实现宽
+    // console.log(newWidth)
+    // 如果设置了最小宽或最大
+    if (dragWidth[0] > 0 && newWidth < dragWidth[0]) {
+      return
+    }
+    if (dragWidth[1] > 0 && newWidth > dragWidth[1]) {
+      return
+    }
+    if (state.mouseDown) {
+      setTableDragLine(event)
+      // 拖动时有可能会存在意外，这里也限制一下
+      if (dragWidth[0] > 0 && newWidth < dragWidth[0]) {
+        newWidth = dragWidth[0] // 过小时使用最小值
+      }
+      if (dragWidth[1] > 0 && newWidth > dragWidth[1]) {
+        newWidth = dragWidth[1] // 超出限制时使用最大值
+      }
+      colWidth[dragHead.current?.index] = newWidth + 'px'
+      // console.log(newWidth)
+      setColWidth([...colWidth])
+      colWidthRef.current = colWidth
+    }
+  }
+  const headMouseUp = () => {
+    if (drag && dragHead.current?.mouseDown) {
+      //emits('dragChange', state.colWidth)
+      props.dragChange && props.dragChange(colWidthRef.current)
+    }
+    dragHead.current = {
+      mouseDown: false,
+      oldX: undefined,
+      oldWidth: undefined,
+      index: undefined
+    }
+    setState({...state, mouseDown: false})
+  }
+  // 7.拖动相关事件结束
   useImperativeHandle(ref, () => ({toggleSelection, getSelectAll, toggleRowSelection, clearSort}))
   // 事件处理结束
   // 鼠标滑过单元格时默认使用title提示
@@ -256,77 +367,190 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
   useEffect(() => {
     fixedHead()
   }, [])
-  return (
-  <div
-  ref={tableDiv}
-  className={classNames(prefixCls + '-table', props.className)}
-  style={{
-    width: props.width,
-    height: state.stateHeight,
-    overflowY: props.height ? 'auto' : undefined,
-    overflowX: props.width ? 'auto' : undefined
-  }}
-  >
-    <table
-    ref={tableEl}
-    className={
-      classNames({
-        'no-stripe': !stripe,
-        'no-border': !border,
-        'no-hover': !hover,
-        'no-ellipsis': !ellipsis
+  useEffect(() => {
+    console.log('数据改变')
+    setExtendStatus({})
+    if (props.fixedBottomScroll) {
+      if (typeof props.fixedBottomScroll === 'string') {
+        const scrollEl = document.querySelector(props.fixedBottomScroll)
+        scrollEl && scrollEl.addEventListener('scroll', scrollFixedBottom)
+      } else {
+        document.addEventListener('scroll', scrollFixedBottom)
+      }
+      window.addEventListener('resize', scrollFixedBottom)
+      setTimeout(() => {
+        scrollFixedBottom() // 初始时先执行一次，否则存在滚动条时需要先滚动下才能看到效果
+      }, 500)
+    }
+    return () => {
+      if (props.fixedBottomScroll) {
+        document.removeEventListener('scroll', scrollFixedBottom)
+        window.removeEventListener('resize', scrollFixedBottom)
+      }
+    }
+  }, [props.data])
+  // 扩展方法
+  const [extendStatus, setExtendStatus] = useState<{ [key: number]: boolean }>({})
+  const extendToggle = (index: number, row: ObjKey) => {
+    if (extendStatus[index] === undefined) {
+      // 默认展开时，首次点击收起，否则首次点击展开
+      extendStatus[index] = !props.extendToggle;
+    } else {
+      extendStatus[index] = !extendStatus[index]
+    }
+    setExtendStatus({...extendStatus})
+    // 异步加载子级
+    if (props.hasChild && typeof props.lazyLoad === 'function') {
+      props.lazyLoad(row, (child: ObjKey[]) => {
+        row.children = child // todo 这么添加进去不会引起示图重新渲染
       })
     }
-    >
-      <colgroup>
-        {colWidth.map((col: string, index: number) =>
-        <col
-        key={index}
-        width={col}
-        className={`column${index}`}
-        />
-        )}
-      </colgroup>
-      {showHeader ?
-      <TableHead
-      ref={tableTh}
-      drag={drag}
-      title={title}
-      layer={maxLayerArray}
-      selectChecked={selectChecked}
-      columns={newColumns}
-      event={tableHeadEvent}/> : ''}
-      <tbody>
-      {props.data.length === 0 ?
-      <tr>
-        <td colSpan={renderColumns.length} className="empty">
-          {emptyText}
-        </td>
-      </tr> :
-      props.data.map((item: any, index: number) =>
-      <tr key={index}>
-        {renderColumns.map((col: ColumnsProps) =>
+  }
+  // 返回展开或收起状态
+  const getStatus = (index: number): boolean => {
+    if (extendStatus[index] === undefined) {
+      return props.extendToggle || false
+    } else {
+      return extendStatus[index]
+    }
+  }
+  // 固定底部滚动条
+  const scrollFixedBottom = () => {
+    console.log('scrollFixedBottom')
+    if (!props.fixedBottomScroll) {
+      return
+    }
+    const tableBodyWrapDom: any = tableDiv.current
+    const tableBodyDom: any = tableEl.current
+    if (!tableBodyWrapDom || !tableBodyDom) {
+      return;
+    }
+    let innerHeight = window.innerHeight
+    // const innerHeight = 400
+    if (typeof props.fixedBottomScroll === 'string') {
+      const fel: any = document.querySelector(props.fixedBottomScroll)
+      if (fel) {
+        innerHeight = fel.offsetHeight + 20
+        console.log(innerHeight)
+      }
+    }
+    //console.log(tableBodyWrapDom?.classList)
+    // top为dom上侧距离可视窗口顶部的值
+    const {top: tableBodyDomTop} = tableBodyWrapDom.getBoundingClientRect() as any
+    if (tableBodyDomTop > innerHeight) {
+      // 此时列表在可视窗口的下侧不可见区域，因此不做任何修改
+      tableBodyWrapDom.style.height = 'unset'
+      tableBodyWrapDom.style.marginBottom = 'unset'
+    } else {
+      // 窗口高度 - 列表距顶部值 且 不超过自身实际值
+      const wrapHeight = Math.min(
+        innerHeight - tableBodyDomTop,
+        tableBodyDom.offsetHeight
+      )
+      tableBodyWrapDom.style.minHeight = '60px'
+      // tableBodyWrapDom.style.height = wrapHeight + 'px'
+      setState({...state, stateHeight: wrapHeight + 'px'})
+      // 需要用marginBottom填充，以保持列表原有高度，避免页面的纵向滚动条变化导致页面滚动的不流畅
+      tableBodyWrapDom.style.marginBottom =
+        tableBodyDom.offsetHeight - wrapHeight + 'px'
+    }
+  }
+  const renderTr = (item: ObjKey, index: number, isChild?: boolean) => {
+    return (<tr key={index}>
+      {renderColumns.map((col: ColumnsProps) =>
         <td
-        className={classNames(col.fixed, col.className)}
-        key={col.prop + index}
-        title={showHoverTitle(col.title, item[col.prop])}>
-          {col.type === 'selection' ?
-          <Checkbox
-          checked={getSelectCheckbox(item)}
-          onChange={checkboxChange.bind(this, item, index)}
-          /> :
-          col.type === 'index' ? index + 1 :
-          col.formatter ? col.formatter(item, col, item[col.prop]) :
-          item[col.prop]
+          className={classNames(col.fixed, col.className)}
+          key={(col.prop || Math.floor(Math.random() * 100)) + index.toString()}
+          title={showHoverTitle(col.title, item[col.prop])}>
+          {col.type === 'selection' && !isChild ?
+            <Checkbox
+              checked={getSelectCheckbox(item)}
+              onChange={checkboxChange.bind(this, item, index)}
+            /> :
+            col.type === 'index' ? index + 1 :
+              col.formatter ? col.formatter(
+                  {
+                    ...item,
+                    tExtend: isChild ? undefined : extendToggle.bind(this, index, item),
+                    tStatus: isChild ? undefined : getStatus(index)
+                  }, col, item[col.prop], index) :
+                item[col.prop]
           }
         </td>
-        )}
-      </tr>
-      )
-      }
-      </tbody>
-    </table>
-  </div>)
+      )}
+    </tr>)
+  }
+  return (
+    <div
+      ref={tableDiv}
+      className={classNames(prefixCls + '-table', props.className)}
+      style={{
+        width: props.width,
+        height: state.stateHeight,
+        overflowY: props.height ? 'auto' : undefined,
+        overflowX: props.width ? 'auto' : undefined
+      }}
+    >
+      <table
+        ref={tableEl}
+        className={
+          classNames({
+            'no-stripe': !stripe,
+            'no-border': !border,
+            'no-hover': !hover,
+            'no-ellipsis': !ellipsis
+          })
+        }
+      >
+        <colgroup>
+          {colWidth.map((col: string, index: number) =>
+            <col
+              key={index}
+              width={col}
+              className={`column${index}`}
+            />
+          )}
+        </colgroup>
+        {showHeader ?
+          <TableHead
+            ref={tableTh}
+            drag={drag}
+            title={title}
+            layer={maxLayerArray}
+            selectChecked={selectChecked}
+            columns={newColumns}
+            event={tableHeadEvent} /> : ''}
+        <tbody>
+        {props.data.length === 0 ?
+          <tr>
+            <td colSpan={renderColumns.length} className="empty">
+              {emptyText}
+            </td>
+          </tr> :
+          props.data.map((item: ObjKey, index: number) =>
+            <Fragment key={index}>
+              {renderTr(item, index)}
+              {typeof props.expandable === 'function' && getStatus(index) ?
+                <tr key={'extend' + index} className='extend-row'>
+                  <td colSpan={renderColumns.length}>{props.expandable(item)}</td>
+                </tr>
+                : ''}
+              {props.hasChild && item.children && getStatus(index) ?
+                item.children.map((child: ObjKey, childIndex: number) => renderTr(child, childIndex, true))
+                : ''}
+            </Fragment>
+          )
+        }
+        </tbody>
+      </table>
+      {dragLine && drag && state.mouseDown ?
+        <div className="table-drag-line" /> : ''}
+      {Object.keys(pagination).length > 0 ?
+        <Pagination
+          {...props.pagination}
+          total={props.data?.length}
+        /> : ''}
+    </div>)
 })
 Table.displayName = 'Table'
 export default Table

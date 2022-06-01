@@ -6,7 +6,7 @@
   }
   td, th {text-align: left;padding: 8px 10px;box-sizing: border-box;border: 1px solid $borderColor;white-space: nowrap;text-overflow: ellipsis;overflow: hidden;background: $backgroundColor}
   tr:nth-child(odd) td { background: lighten($primaryColor, 45) }
-  tr:hover td { background: lighten($primaryColor, 55); transition: background .5s }
+  tr:hover td { background: lighten($primaryColor, 42); transition: background .5s }
   .no-border {border: none;
     td, th {border: none;border-bottom: 1px solid $borderColor;}
   }
@@ -36,13 +36,13 @@
   }
   @include ns(checkbox) {position: relative;z-index: 2}
   /*排序*/
-  .caret-wrapper {display: inline-flex;flex-direction: column;align-items: center;height: 34px;width: 24px;vertical-align: middle;cursor: pointer;overflow: initial;position: relative;
-    .sort-caret {width: 0;height: 0;border: 5px solid transparent;position: absolute;left: 7px;
-      &.asc {border-bottom-color: #c0c4cc;top: 5px;}
-      &.desc {border-top-color: #c0c4cc;bottom: 7px;}
+  .caret-wrapper {display: inline-block;height: 20px;width: 16px;vertical-align: middle;cursor: pointer;overflow: initial;position: relative;margin-left: 3px;
+    .sort-caret {position: absolute;font-size: 12px;transform: scale(.8);
+      &.asc {bottom: 0;}
+      &.desc {transform: rotate(180deg) scale(.8)}
       &.active {
-        &.asc {border-bottom-color: $primaryColor}
-        &.desc {border-top-color: $primaryColor}
+        &.asc {color: $primaryColor}
+        &.desc {color: $primaryColor}
       }
     }
   }

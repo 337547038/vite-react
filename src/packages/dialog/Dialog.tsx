@@ -3,6 +3,7 @@ import classNames from 'classnames'
 import {prefixCls} from '../prefix'
 import {Button} from "../button"
 import ReactDOM from 'react-dom'
+//import {CSSTransition} from 'react-transition-group'
 import {
   getOffset,
   scrollTop,
@@ -34,6 +35,7 @@ export interface Props {
   closeTips?: string // 自动关闭时提示语,大写S会被替换为具体时间
   beforeClose?: (type: string, fn: () => void) => boolean | void // 关闭前的回调
   animation?: string
+  animationDuration?: number
   isAlert?: boolean // 用于区别引用形式，组件或者是插件，不需要通过外部传参。true时关闭弹窗时同时从body移除
   //remove?: () => void // 用于移动message弹窗
   icon?: string | number // 主要用于this.$dialog中常见的几种提示
@@ -64,8 +66,9 @@ const Dialog: React.FC<Props> = (props) => {
   const headEl = useRef<HTMLDivElement>(null)
   const dialogEl = useRef<HTMLDivElement>(null)
   const clearTime = useRef(0)
+  const [cssTransition, setCssTransition] = useState<string>('')
   useEffect(() => {
-    setVisible(props.visible)
+    setTimeOutVisible(props.visible)
     if (props.visible && autoClose > 0) {
       // 调用自动关闭
       clearTime.current && window.clearInterval(clearTime.current)
@@ -118,17 +121,27 @@ const Dialog: React.FC<Props> = (props) => {
       props.onClose && props.onClose()
     }
   }
+  const setTimeOutVisible = (visible?: boolean) => {
+    // 兼容在dialog组件里修改visible来关闭时显示动画
+    let cssClass = `dialog-${props.animation || 'fade'}-exit-active` // 退出
+    if (visible) {
+      setVisible(true) // 进来时首选设置显示才有动画
+      cssClass = `dialog-${props.animation || 'fade'}-enter-active`
+    }
+    setCssTransition(cssClass)
+    window.setTimeout(() => {
+      if (!visible) {
+        setVisible(false)
+      }
+      setCssTransition('')
+    }, props.animationDuration || 500)
+  }
   const close = () => {
-    setVisible(false)
     if (autoClose) {
       clearTime.current && window.clearInterval(clearTime.current)
     }
     // message方法时移除，延时移除可保留过渡动画
-    /*if (props.isAlert && props.remove) {
-      window.setTimeout(() => {
-        props.remove && props.remove()
-      }, 500)
-    }*/
+    setTimeOutVisible(false)
     setScrollBarLock(false) // 解锁
   }
   const setScrollBarLock = (bool: boolean) => {
@@ -203,7 +216,7 @@ const Dialog: React.FC<Props> = (props) => {
       iconName = icon + ''
   }
   const dialogHtml = (<div
-    className={classNames(`${prefixCls}-dialog-modal`, {modal: !modal, center: props.center})}
+    className={classNames(`${prefixCls}-dialog-modal`, cssTransition, {modal: !modal, center: props.center})}
     style={{zIndex: zIndex, display: visible ? '' : 'none'}}
     onClick={() => {
       btnClick('modal')
@@ -271,6 +284,12 @@ const Dialog: React.FC<Props> = (props) => {
         : ''}
     </div>
   </div>)
+  /*  return (<CSSTransition
+      in={visible}
+      timeout={props.animationDuration || 30000}
+      classNames={`dialog-${props.animation || 'fade'}`}>
+      {appendToBody ? <div>{ReactDOM.createPortal(dialogHtml, document.body)}</div> : dialogHtml}
+    </CSSTransition>)*/
   return appendToBody ? ReactDOM.createPortal(dialogHtml, document.body) : dialogHtml
 }
 // Dialog.displayName = 'Dialog'

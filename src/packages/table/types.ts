@@ -8,12 +8,12 @@ export interface ColumnsProps {
   width?: string
   className?: string
   align?: 'left' | 'center' | 'right' // 对齐方式，可选left/center/right
-  type?: 'selection' | 'index' | 'extend' // 可选selection（多选）/index序号
+  type?: 'selection' | 'index' // 可选selection（多选）/index序号
   fixed?: 'left' | 'right' // 固定当前列，可选left/right
   sortBy?: boolean, // 当前列显示排序按钮
   title?: boolean, // 鼠标滑过单元格时是否显示title提示语
   drag?: boolean, // 当前单元格允许拖动，仅在table设置drag＝true时有效
-  formatter?: (row: any, col: ColumnsProps, val: string) => void,
+  formatter?: (row: ObjKey, col: ColumnsProps, val: string, index: number) => void,
   tooltip?: boolean | object //[Boolean, Object],
   tag?: boolean | object //[Boolean, Object]
   children?: ColumnsProps[]
@@ -35,14 +35,17 @@ export interface Props {
   dragWidth?: number[] // 拖动时的最小宽和最大宽限制，0为不限
   title?: boolean //鼠标滑过单元格时显示title提示
   emptyText?: string
-  rowColSpan?: () => void
+  rowColSpan?: (rowIndex: number, colIndex: number) => void
   hasChild?: boolean
-  lazyLoad?: () => void
+  lazyLoad?: (row: any, callback: (child: any) => void) => void
   extendToggle?: boolean // 默认展开扩展
   // sortSingle?: boolean // 单个排序
-  pagination?: () => void // 分页相关参数
+  pagination?: object // 分页相关参数
   fixedBottomScroll?: boolean | string
   selectClick?: (list: ObjKey[], checked: boolean, row?: ObjKey, index?: number) => void
+  sortChange?: (row: ObjKey) => void
+  dragChange?: (val: string[]) => void
+  expandable?: (row: ObjKey) => any
 }
 
 export interface TableRef {
