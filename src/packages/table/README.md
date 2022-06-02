@@ -33,7 +33,7 @@ function Example() {
     }
   ]
   return (<div className='demo-table'>
-    <Table data={tableData} columns={columns}/>
+    <Table data={tableData} columns={columns} />
   </div>)
 }
 
@@ -80,7 +80,7 @@ function Example() {
     console.log('del')
   }
   return (<div className='demo-table'>
-    <Table data={tableData} columns={columns}/>
+    <Table data={tableData} columns={columns} />
   </div>)
 }
 
@@ -96,6 +96,7 @@ import {Button} from '../button'
 import {Table} from './index'
 import type {TableRef} from "./index"
 import tableData from './demoJs.json'
+
 function Example() {
   const columns = [
     {
@@ -120,7 +121,7 @@ function Example() {
       label: '地址'
     }
   ]
-  const tableEl=useRef<TableRef>(null)
+  const tableEl = useRef < TableRef > (null)
 // 全选
   const allSelect = () => {
     tableEl.current?.toggleSelection(true)
@@ -136,7 +137,7 @@ function Example() {
     alert(JSON.stringify(val))
   }
   // 选中或取消指定行
-  const toggleRowSelection = (bool:boolean) => {
+  const toggleRowSelection = (bool: boolean) => {
     const row = [tableData[1], tableData[2]]
     row.forEach((row) => {
       tableEl.current?.toggleRowSelection(row, bool)
@@ -147,10 +148,10 @@ function Example() {
       <Button onClick={allSelect}>全选</Button>
       <Button onClick={unSelect}>取消全选</Button>
       <Button onClick={getSelect}>获取所选行</Button>
-      <Button onClick={()=>toggleRowSelection(true)}>将第2,3条设为选中状态</Button>
-      <Button onClick={()=>toggleRowSelection(false)}>取消第2,3条选中状态</Button>
+      <Button onClick={() => toggleRowSelection(true)}>将第2,3条设为选中状态</Button>
+      <Button onClick={() => toggleRowSelection(false)}>取消第2,3条选中状态</Button>
     </div>
-    <Table data={tableData} columns={columns} ref={tableEl}/>
+    <Table data={tableData} columns={columns} ref={tableEl} />
   </div>)
 }
 
@@ -191,7 +192,7 @@ function Example() {
   ]
 
   return (<div className='demo-table'>
-    <Table data={tableData} columns={columns} height="200px"/>
+    <Table data={tableData} columns={columns} height="200px" />
   </div>)
 }
 
@@ -212,7 +213,7 @@ function Example() {
       type: 'selection',
       fixed: 'left',
       width: '50px',
-      className:'cls'
+      className: 'cls'
     },
     {
       type: 'index',
@@ -239,11 +240,11 @@ function Example() {
       prop: 'zip',
       label: '邮箱',
       width: '100px',
-      fixed:'right'
+      fixed: 'right'
     }
   ]
   return (<div className='demo-table'>
-    <Table data={tableData} columns={columns} height="200px" width="600px"/>
+    <Table data={tableData} columns={columns} height="200px" width="600px" />
   </div>)
 }
 
@@ -258,37 +259,37 @@ export default Example
 import {Table} from './index'
 import tableData from './demoJs.json'
 
-  function Example() {
-    const columns = [
-      {
-        type: 'selection'
-      },
-      {
-        type: 'index',
-        label: '序号',
-        prop: 'index'
-      },
-      {
-        prop: 'date',
-        label: '日期',
-        sortBy: true
-      },
-      {
-        prop: 'name',
-        label: '姓名',
-        sortBy: true
-      },
-      {
-        prop: 'address',
-        label: '地址'
-      }
-    ]
-    const sortChange = (obj: any) => {
-      console.log(obj)
-      alert(JSON.stringify(obj))
+function Example() {
+  const columns = [
+    {
+      type: 'selection'
+    },
+    {
+      type: 'index',
+      label: '序号',
+      prop: 'index'
+    },
+    {
+      prop: 'date',
+      label: '日期',
+      sortBy: true
+    },
+    {
+      prop: 'name',
+      label: '姓名',
+      sortBy: true
+    },
+    {
+      prop: 'address',
+      label: '地址'
     }
+  ]
+  const sortChange = (obj: any) => {
+    console.log(obj)
+    alert(JSON.stringify(obj))
+  }
   return (<div className='demo-table'>
-    <Table data={tableData} columns={columns} sortChange={sortChange}/>
+    <Table data={tableData} columns={columns} sortChange={sortChange} />
   </div>)
 }
 
@@ -302,6 +303,7 @@ export default Example
 ```jsx
 import {Table} from './index'
 import tableData from './demoJs.json'
+
 function Example() {
   const columns = [
     {
@@ -380,7 +382,8 @@ function Example() {
     dragLine: true
   })
   const onBtnClick = (type: string) => {
-    setState({...state, [type]: !(state as any)[type]})
+    setState({...state, [type]: !(state as any)[type]
+  })
   }
   return (<div className='demo-table'>
     <div>
@@ -448,11 +451,11 @@ function Example() {
       }
     }
   ]
-  const expandable = (row:any) => {
+  const expandable = (row: any) => {
     return JSON.stringify(row)
   }
   return (<div className='demo-table'>
-    <Table data={tableData} columns={columns} expandable={expandable}/>
+    <Table data={tableData} columns={columns} expandable={expandable} />
   </div>)
 }
 
@@ -492,17 +495,17 @@ function Example() {
     },
     {
       label: '操作',
-      formatter: (row:any) => {
+      formatter: (row: any) => {
         return (
-          row.tExtend?
+          row.tExtend ?
             <span onClick={() => row.tExtend()}>{
               row.tStatus ? '收起' : '展开子级'
-            }</span>:'')
+            }</span> : '')
       }
     }
   ]
   return (<div className='demo-table'>
-    <Table data={tableData} columns={columns} hasChild={true}/>
+    <Table data={tableData} columns={columns} hasChild={true} />
   </div>)
 }
 
@@ -542,14 +545,14 @@ function Example() {
     },
     {
       label: '操作',
-      formatter: (row:any) => {
+      formatter: (row: any) => {
         return (<span onClick={() => row.tExtend()}>{
           row.tStatus ? '收起' : '加载子级'
         }</span>)
       }
     }
   ]
-  const lazyLoad = (row:any, resolve:any) => {
+  const lazyLoad = (row: any, resolve: any) => {
     // row 当前点击行信息
     // 模拟请求加载
     console.log('row')
@@ -562,7 +565,7 @@ function Example() {
     }, 500)
   }
   return (<div className='demo-table'>
-    <Table data={tableData} columns={columns} hasChild={true} lazyLoad={lazyLoad}/>
+    <Table data={tableData} columns={columns} hasChild={true} lazyLoad={lazyLoad} />
   </div>)
 }
 
@@ -690,7 +693,7 @@ function Example() {
 
   }
   return (<div className='demo-table'>
-    <Table data={tableData} columns={columns}/>
+    <Table data={tableData} columns={columns} />
   </div>)
 }
 
@@ -731,12 +734,12 @@ function Example() {
   const pagination = {
     current: 1,
     pageSize: 3,
-    onChange: (v:number) => {
+    onChange: (v: number) => {
       console.log(v)
     }
   }
   return (<div className='demo-table'>
-    <Table data={tableData} columns={columns} pagination={pagination}/>
+    <Table data={tableData} columns={columns} pagination={pagination} />
   </div>)
 }
 
@@ -745,8 +748,7 @@ export default Example
 
 ### 鼠标滑过tooltip提示
 
-添加`tooltip=true`或`tooltip="{direction:'left',..其他所有的tooltip属性}"`即可在鼠标滑过时显示`tooltip`提示
-默认为`true`
+添加`tooltip=true`或`tooltip="{direction:'left',..其他所有的tooltip属性}"`即可在鼠标滑过时显示`tooltip`提示 默认为`true`
 
 ```jsx
 import {Table} from './index'
@@ -776,7 +778,7 @@ function Example() {
     }
   ]
   return (<div className='demo-table'>
-    <Table data={tableData} columns={columns}/>
+    <Table data={tableData} columns={columns} />
   </div>)
 }
 
@@ -874,38 +876,36 @@ export default Example
 
 ### Table
 
-| 参数                | 类型             | 说明                                                                                                                                                         |
-|-------------------|----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| data              | array          | 列表数据                                                                                                                                                       |
-| columns           | array          | 表头数据                                                                                                                                                       |
-| showHeader        | boolean/true   | 是否显示表头                                                                                                                                                     |
-| className         | String         | 表格类名                                                                                                                                                       |
-| hover             | boolean/true   | 鼠标经过显示高亮                                                                                                                                                   |
-| border            | boolean/true   | 是否显示表格纵向边框                                                                                                                                                 |
-| stripe            | boolean/true   | 是否显示间隔斑马纹                                                                                                                                                  |
-| height            | String         | table 的高，溢出显示滚动条，且表头固定                                                                                                                                     |
-| width             | String         | 表格外层 div 的宽，当单元格总和大于表格 width 时，出现横向滚动条                                                                                                                     |
-| ellipsis          | boolean/true   | 表格单元格文字溢出显示...，在不指定列宽时，各列平分表格宽                                                                                                                             |
-| emptyText         | String         | 无数据时显示的文本                                                                                                                                                  |
-| title             | Boolean/true   | 鼠标滑过单元格时显示 title 提示                                                                                                                                        |
-| drag              | boolean/false  | 允许拖动表头改变当前单元格宽度                                                                                                                                            |
-| dragLine          | boolean/true   | 拖动时显示垂直线                                                                                                                                                   |
-| dragWidth         | array          | 允许拖动最大与最小宽度[min,max]                                                                                                                                       |
-| extendToggle      | boolean/false  | 扩展行/子节点初始展开或收起状态                                                                                                                                           |
+| 参数                | 类型             | 说明              |
+|-------------------|----------------|-----------------|
+| data              | array          | 列表数据            |
+| columns           | array          | 表头数据            |
+| showHeader        | boolean/true   | 是否显示表头          |
+| className         | String         | 表格类名            |
+| hover             | boolean/true   | 鼠标经过显示高亮        |
+| border            | boolean/true   | 是否显示表格纵向边框      |
+| stripe            | boolean/true   | 是否显示间隔斑马纹       |
+| height            | String         | table 的高，溢出显示滚动条，且表头固定 |
+| width             | String         | 表格外层 div 的宽，当单元格总和大于表格 width 时，出现横向滚动条 |
+| ellipsis          | boolean/true   | 表格单元格文字溢出显示...，在不指定列宽时，各列平分表格宽 |
+| emptyText         | String         | 无数据时显示的文本       |
+| title             | Boolean/true   | 鼠标滑过单元格时显示 title 提示 |
+| drag              | boolean/false  | 允许拖动表头改变当前单元格宽度 |
+| dragLine          | boolean/true   | 拖动时显示垂直线        |
+| dragWidth         | array          | 允许拖动最大与最小宽度[min,max] |
+| extendToggle      | boolean/false  | 扩展行/子节点初始展开或收起状态|
 | rowColSpan        | function       | 合并行或列方法。通过给传入 rowColSpan 方法可以实现合并行或列，方法的参数(当前行号 rowIndex,当前列号 columnIndex,当前行 row,当前列 column)四个属性。该函数返回一个包含两个数字的数组，第一个 rowspan，第二个 colspan，即向纵向和横向合并多少个单元格 |
-| pagination        | object         | 有相关参数时显示分页，参数的pagination组件参数                                                                                                                               |
-| hasChild          | boolean/true   | 是否包含子节点数据，为true时，当 `row` 中包含 `children` 字段时，被视为子节点数据                                                                                                       |
-| lazyLoad          | function       | 设置了`lazyLoad`时，被视为子节点使用懒加载方式，function(row,resolve) row当前行信息                                                                                                |
-| sortSingle        | boolean/false  | 如果设置了排序功能，开启后只能按其中一个字段排序                                                                                                                                   |
-| fixedBottomScroll | boolean/string | 固定横向滚动条在底部,可为节点类名                                                                                                                                          |
-| selectClick       | function       | 勾选单列事件，function(list,checked,row, index) list所有已勾选的row集合，checked当前状态，row当前点击行信息，index当前行序号                                                                 |
-| dragChange        | function(val)  | 拖动改变列表事件，返回所有列的宽度信息                                                                                                                                        |
-| sortChange        | function(row)  | 排序点击事件                                                                                                                                                     |
-| expandable        | function(row)  | 扩展事件                                                                                                                                                       |
-| scroll            | function       | 表格时滚动时的滚动事件，function(scrollTop,bottom,el),scrollTop滚动条的位置，bottom是否滚动到底部,el当前滚动的对象                                                                          |
-| rowClick          | function       | 当前行点击事件，即tr点击事件，function(row,index)                                                                                                                        |
-| cellClick         | function       | 当前列点击事件，即td点击事件，function(row,column,rowIndex, columnIndex)                                                                                                 |
-
+| pagination        | object         | 有相关参数时显示分页，参数的pagination组件参数 |
+| hasChild          | boolean/true   | 是否包含子节点数据，为true时，当 `row` 中包含 `children` 字段时，被视为子节点数据 |
+| lazyLoad          | function       | 设置了`lazyLoad`时，被视为子节点使用懒加载方式，function(row,resolve) row当前行信息 |
+| fixedBottomScroll | boolean/string | 固定横向滚动条在底部,可为节点类名 |
+| selectClick       | function       | 勾选单列事件，function(list,checked,row, index) list所有已勾选的row集合，checked当前状态，row当前点击行信息，index当前行序号 |
+| dragChange        | function(val)  | 拖动改变列表事件，返回所有列的宽度信息 |
+| sortChange        | function(row)  | 排序点击事件          |
+| expandable        | function(row)  | 扩展事件            |
+| scroll            | function       | 表格时滚动时的滚动事件，function(scrollTop,bottom,el),scrollTop滚动条的位置，bottom是否滚动到底部,el当前滚动的对象 |
+| rowClick          | function       | 当前行点击事件，即tr点击事件，function(row,index) |
+| cellClick         | function       | 当前列点击事件，即td点击事件，function(row,column,rowIndex, columnIndex) |
 
 ### Table Methods
 
