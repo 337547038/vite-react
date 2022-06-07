@@ -23,10 +23,10 @@ export default [
     path: '/test',
     component: lazy(() => import('../pages/index'))
   },
-  {
+  /*{
     path: '/ant',
     component: lazy(() => import('../pages/ant'))
-  },
+  },*/
   ...docsRouter
 ];
 export {routerList};

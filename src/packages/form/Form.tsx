@@ -1,10 +1,9 @@
-import React, {forwardRef, useRef, useImperativeHandle, useState, useContext, useEffect, useCallback} from 'react'
+import React, {forwardRef, useRef, useImperativeHandle} from 'react'
 import classNames from 'classnames'
 import {prefixCls} from '../prefix'
 import type {getValueRef, RulesObject} from "./types"
 import {FormPropsContext} from './contextForm'
 import {omit} from "../util"
-import formItem from "../formItem/FormItem";
 
 interface RulesArray {
   [key: string]: RulesObject[]
@@ -24,7 +23,7 @@ interface Props {
 }
 
 interface Callback {
-  getValue: () => void
+  getValue: () => never
   validate: () => Promise<void>
   clearTips: () => void
   prop: string
