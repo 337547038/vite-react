@@ -482,7 +482,7 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
       if (rowIndex === item.row && colIndex === item.col) {
         if (item.rowSpan === 0 || item.colSpan === 0) {
           temp.style = {display: 'none'}
-        } else{
+        } else {
           if (item.rowSpan && item.rowSpan > 1) {
             temp.rowSpan = item.rowSpan
           }
@@ -525,7 +525,7 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
   return (
     <div
       ref={tableDiv}
-      className={classNames(prefixCls + '-table', props.className)}
+      className={classNames(prefixCls + '-table', props.className, {'is-scroll': props.width})}
       style={{
         width: props.width,
         height: state.stateHeight,

@@ -1,5 +1,5 @@
 export interface getValueRef {
-  getValue: () => void
+  getValue: () => any
 }
 export interface RulesObject {
   type: string
