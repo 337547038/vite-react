@@ -75,6 +75,7 @@ const Dialog: React.FC<Props> = (props) => {
       setCountdown(autoClose)
     }
   }, [props.visible])
+  // 倒计时
   useEffect(() => {
     if (props.visible && autoClose > 0) {
       clearTime.current = window.setInterval(() => {
@@ -121,6 +122,7 @@ const Dialog: React.FC<Props> = (props) => {
       props.onClose && props.onClose()
     }
   }
+  // 处理动画
   const setTimeOutVisible = (visible?: boolean) => {
     // 兼容在dialog组件里修改visible来关闭时显示动画
     let cssClass = `dialog-${props.animation || 'fade'}-exit-active` // 退出

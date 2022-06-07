@@ -4,7 +4,8 @@
 
 ```jsx
 import {Popover} from './index'
-
+import {Button} from '../button'
+import {Message} from "../message"
 function Example() {
   const onClick = (done: () => void) => {
     Message.Msg('点击了删除确认')

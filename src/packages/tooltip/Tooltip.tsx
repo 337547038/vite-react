@@ -75,7 +75,7 @@ const Tooltip = React.forwardRef<TooltipRef, Props>((props, ref) => {
         break
       case 'top-right':
         style.right =
-          windowWidth - (offset.left + offset.width + propsX) + 'px'
+        windowWidth - (offset.left + offset.width + propsX) + 'px'
         style.bottom = bottom
         break
       case 'left':
@@ -101,7 +101,7 @@ const Tooltip = React.forwardRef<TooltipRef, Props>((props, ref) => {
         break
       case 'bottom-right':
         style.right =
-          windowWidth - (offset.left + offset.width + propsX) + 'px'
+        windowWidth - (offset.left + offset.width + propsX) + 'px'
         style.top = offset.top + offset.height + space + 'px'
         break
       default:
@@ -176,31 +176,32 @@ const Tooltip = React.forwardRef<TooltipRef, Props>((props, ref) => {
     }
   }, [])
   const TooltipHtml = (
-    <div
-      ref={tooltipEl}
-      className={classNames([`${prefixCls}-tooltip`, direction, cssClsTransition, props.className])}
-      style={tooltipStyle}
-      onClick={onClick}
-    >
-      <i className="arrow" />
-      {props.content ?
-        <span>{props.content}</span> : ''}
-    </div>)
+  <div
+  ref={tooltipEl}
+  className={classNames([`${prefixCls}-tooltip`, direction, cssClsTransition, props.className])}
+  style={tooltipStyle}
+  onClick={onClick}
+  >
+    <i className="arrow"/>
+    {props.content ?
+    <span>{props.content}</span> : ''}
+  </div>)
   if (props.disabled) {
     return (<>{props.children}</>)
   } else {
     return (
-      <span
-        ref={el}
-        className={`${prefixCls}-tooltip-box`}
-        onMouseLeave={onMouseLeave}
-        onMouseEnter={onMouseEnter}
-        onClick={mouseClick}>
+    <span
+    ref={el}
+    className={`${prefixCls}-tooltip-box`}
+    onMouseLeave={onMouseLeave}
+    onMouseEnter={onMouseEnter}
+    onClick={mouseClick}>
         {props.children}
-        {visible && !props.disabled ?
-          (appendToBody ? ReactDOM.createPortal(TooltipHtml, document.body) : TooltipHtml)
-          : ''}
+      {visible && !props.disabled ?
+      (appendToBody ? ReactDOM.createPortal(TooltipHtml, document.body) : TooltipHtml)
+      : ''}
   </span>)
+  }
 })
 Tooltip.displayName = 'Tooltip'
 export default Tooltip
