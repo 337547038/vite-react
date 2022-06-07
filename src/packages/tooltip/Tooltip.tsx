@@ -1,12 +1,12 @@
-import React, {useContext, useRef, useState, useEffect} from 'react'
+import React, {useRef, useState, useEffect} from 'react'
 import classNames from 'classnames'
 import {prefixCls} from '../prefix'
 import ReactDOM from 'react-dom'
 import {getOffset, getWindow} from "../util/dom";
 
-interface Props {
+export interface Props {
   children?: React.ReactNode
-  content?: string // rgb格式，初始值
+  content?: string | React.ReactNode
   direction?: string
   maxWidth?: number
   delay?: number // 鼠标移开后延时移除时间，主要能够让鼠标移动提示文字上，单位毫秒
@@ -22,7 +22,11 @@ interface Props {
   onClick?: (visible: boolean) => void
 }
 
-const Tooltip: React.FC<Props> = (props) => {
+export interface TooltipRef {
+  close: () => void
+}
+
+const Tooltip = React.forwardRef<TooltipRef, Props>((props, ref) => {
   const {
     appendToBody = true,
     direction = 'top-left',
@@ -144,6 +148,7 @@ const Tooltip: React.FC<Props> = (props) => {
       setCssTransition(false)
     }, delay)
   }
+  React.useImperativeHandle(ref, () => ({close}))
   const [cssClsTransition, setClsCssTransition] = useState<string>('')
   const setCssTransition = (val: boolean) => {
     let cssCls = `tooltip-${transition}-enter`
@@ -193,5 +198,6 @@ const Tooltip: React.FC<Props> = (props) => {
     (appendToBody ? ReactDOM.createPortal(TooltipHtml, document.body) : TooltipHtml)
     : ''}
   </span>)
-}
+})
+Tooltip.displayName = 'Tooltip'
 export default Tooltip

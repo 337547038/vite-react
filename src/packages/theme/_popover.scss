@@ -1,2 +1,5 @@
 @charset "utf-8";
-@include ns(popover) {}
+@include ns(popover) {
+  .popover-content{padding: 10px 0}
+  .popover-footer{text-align: right;}
+}

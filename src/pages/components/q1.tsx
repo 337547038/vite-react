@@ -19,16 +19,20 @@ import tableData from '../../packages/table/demoJs.json'
 import type {TableRef} from "../../packages/table/types";
 
 import {Tooltip} from '../../packages/tooltip'
+import {Popover} from '../../packages/popover'
+import {Message} from "../../packages/message";
 
 function Example() {
+  const onClick = (done: () => void) => {
+    Message.Msg('点击了删除确认')
+    done()
+  }
   return (<div className='demo-tooltip' style={{margin: '150px'}}>
-    <Tooltip
-    trigger='click'
-    direction="top"
-    delay={300}
-    content='这里是提示内容，鼠标可以移动到上面，提示内容不会消失，可实现从这里点击跳转链接等'>
-      <Button>设置延时关闭</Button>
-    </Tooltip>
+    <Popover
+    content='确定要删除吗？'
+    onClick={onClick}>
+      <Button>删除</Button>
+    </Popover>
   </div>)
 }
 
