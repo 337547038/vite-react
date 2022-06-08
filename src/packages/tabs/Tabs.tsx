@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react'
 import classNames from 'classnames'
 import {prefixCls} from '../prefix'
 import type {Props as TabPaneProps} from './TabPane'
+import {CSSTransition} from "react-transition-group"
 
 interface Props {
   defaultValue?: string
@@ -67,12 +68,21 @@ const Tabs: React.FC<Props> = (props) => {
       )}
     </div>
     {showContent ? <div className="tabs-content">
-      {childrenPane.map((item: any, index: number) =>
-        <div
-          key={index}
-          style={{display: getShow(item, index) ? '' : 'none'}}
-          className={classNames(`tab-pane-${index}`, item.className)}>{item.children}</div>)}
+        {childrenPane.map((item: any, index: number) =>
+          <CSSTransition
+            key={index}
+            in={getShow(item, index)}
+            timeout={500}
+            classNames="tabs"
+          >
+            <div
+              key={index}
+              style={{display: getShow(item, index) ? '' : 'none'}}
+              className={classNames(`tab-pane-${index}`, item.className)}>{item.children}</div>
+          </CSSTransition>
+        )}
     </div> : ''}
+
   </div>)
 }
 export default Tabs

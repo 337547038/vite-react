@@ -1,0 +1,21 @@
+@charset "UTF-8";
+@include ns(menu) {
+  ul {display: flex;}
+  .icon-arrow {font-size: 14px;transform: scale(.8);margin-left: 5px;display: block;cursor: pointer;}
+  li.disabled {opacity: $disabledOpacity;cursor: not-allowed;
+    .menu-title {cursor: not-allowed}
+  }
+  &.horizontal {
+    ul {line-height: 46px;border-bottom: 1px solid $borderColor;}
+    li {position: relative;
+      ul {background: #fff;position: absolute;box-shadow: 0 0 12px rgba(0, 0, 0, .12);display: block;z-index: 10;left: 101%;top: 0;
+        &.layer-1 {left: 20px;top: inherit}
+      }
+    }
+  }
+  &.vertical {}
+  .menu-title {display: flex; align-items: center;font-size: 14px; text-overflow: ellipsis;white-space: nowrap;width: 100%;cursor: pointer;padding: 0 20px;
+    .icon {display: block;margin-right: 3px;font-size: 16px;}
+  }
+}
+

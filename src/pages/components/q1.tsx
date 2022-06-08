@@ -1,15 +1,52 @@
 import React, {ReactElement, useCallback, useState, useRef, useEffect} from "react";
 import {Tabs, TabPane} from '../../packages/tabs'
+import {SwitchTransition, CSSTransition} from "react-transition-group";
+import {Menu} from '../../packages/menu'
 
 function Example() {
-  return (<Tabs>
-    <TabPane label="用户管理">用户管理</TabPane>
-    <TabPane label="配置管理">配置管理</TabPane>
-    <TabPane label="角色管理">角色管理</TabPane>
-    <TabPane label="定时任务补偿">定时任务补偿</TabPane>
-  </Tabs>)
+  const items = [
+    {
+      label: 'Nav One',
+      key: 'a',
+      icon: 'user'
+    },
+    {
+      label: 'Nav Two',
+      key: 'b',
+      icon: 'search',
+      children: [
+        {
+          label: 'option1',
+          key:'option1',
+          children: [
+            {
+              label: 'option11',
+              key:'option11',
+            },
+            {
+              label: 'option12',
+              key:'option12',
+            }
+          ]
+        },
+        {
+          label: 'option2',
+          key:'option2',
+        },
+        {
+          label: 'option3',
+          key:'option3',
+        }
+      ]
+    },
+    {
+      label: 'Nav Three',
+      key: 'c',
+      icon: 'date',
+      disabled: true
+    }
+  ]
+  return (<Menu items={items} mode="horizontal"/>)
 }
 
-
 export default Example
-

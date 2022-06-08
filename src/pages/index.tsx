@@ -45,7 +45,7 @@ const App: React.FC<ButtonProps> = (props) => {
     <Q1></Q1>
     {/*<Field type="input" data={inputData} onChange={onChange} defaultValue={value} />
     <FormItem label="input" type="input" data={inputData} defaultValue={value} onChange={onChange}/>*/}
-    <p><Button onClick={onClick}>模拟数据变化</Button></p>
+    {/*<p><Button onClick={onClick}>模拟数据变化</Button></p>*/}
   </div>)
 
 };

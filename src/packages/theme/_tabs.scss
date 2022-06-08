@@ -12,4 +12,14 @@
     }
   }
   .tabs-content {padding: 20px;}
+  .tabs-enter-active {animation: tabsAnimationEnter .5s both}
+  .tabs-exit-active {animation: tabsAnimationExit .5s both}
+}
+@keyframes tabsAnimationEnter {
+  0% {opacity: 0}
+  100% {opacity: 1}
+}
+@keyframes tabsAnimationExit {
+  0% {opacity: 1}
+  100% {opacity: 0}
 }
