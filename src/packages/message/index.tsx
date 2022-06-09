@@ -19,7 +19,6 @@ const createRoot = (props: MessageProps) => {
         isAlert={true}
         closeModal={false}
         appendToBody={false}
-        visible={true}
         onClose={() => onClose(mountNode)} />
     </BrowserRouter>
   )
@@ -39,21 +38,44 @@ export const Message = {
       className: 'dialog-alert'
     })
   },
-  Confirm: (content: string, props?: MessageProps) => {
-    createRoot({
-      ...props,
-      title: props?.title || '信息',
-      content: content,
-      confirm: props?.confirm || '确定',
-      cancel: '取消',
-      className: 'dialog-confirm'
-    })
-  },
   Msg: (content: string, props?: MessageProps) => {
     createRoot({
       ...props,
       content: content,
       className: 'dialog-msg',
+      showClose: false,
+      autoClose: props?.autoClose || 3,
+      modal: props?.modal || false
+    })
+  },
+  Success: (content: string, props?: MessageProps) => {
+    createRoot({
+      ...props,
+      content: content,
+      className: 'dialog-msg',
+      icon: '1',
+      showClose: false,
+      autoClose: props?.autoClose || 3,
+      modal: props?.modal || false
+    })
+  },
+  Fail: (content: string, props?: MessageProps) => {
+    createRoot({
+      ...props,
+      content: content,
+      className: 'dialog-msg',
+      icon: '2',
+      showClose: false,
+      autoClose: props?.autoClose || 3,
+      modal: props?.modal || false
+    })
+  },
+  Info: (content: string, props?: MessageProps) => {
+    createRoot({
+      ...props,
+      content: content,
+      className: 'dialog-msg',
+      icon: '3',
       showClose: false,
       autoClose: props?.autoClose || 3,
       modal: props?.modal || false

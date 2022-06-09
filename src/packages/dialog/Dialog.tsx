@@ -57,7 +57,8 @@ const Dialog: React.FC<Props> = (props) => {
     showClose = true, // 是否显示关闭按钮
     autoClose = 0, // 自动关闭时间
     closeTips = 'S秒后自动关闭', // 自动关闭时提示语,大写S会被替换为具体时间
-    icon = 0 // 主要用于this.$dialog中常见的几种提示
+    icon = 0, // 主要用于this.$dialog中常见的几种提示
+    animationDuration = 500
   } = props
   const [visible, setVisible] = useState(props.visible)
   const [moveStyle, setMoveStyle] = useState<React.CSSProperties>({})
@@ -68,7 +69,19 @@ const Dialog: React.FC<Props> = (props) => {
   const clearTime = useRef(0)
   const [cssTransition, setCssTransition] = useState<string>('')
   useEffect(() => {
-    setTimeOutVisible(props.visible)
+    if (props.isAlert) {
+      // 这种alert方式，弹出时先将节点插入到文档，添加延时防抖动
+      setTimeout(() => {
+        setTimeOutVisible(true)
+        if (autoClose > 0) {
+          // 调用自动关闭
+          clearTime.current && window.clearInterval(clearTime.current)
+          setCountdown(autoClose)
+        }
+      }, 50)
+    } else {
+      setTimeOutVisible(props.visible)
+    }
     if (props.visible && autoClose > 0) {
       // 调用自动关闭
       clearTime.current && window.clearInterval(clearTime.current)
@@ -77,7 +90,7 @@ const Dialog: React.FC<Props> = (props) => {
   }, [props.visible])
   // 倒计时
   useEffect(() => {
-    if (props.visible && autoClose > 0) {
+    if (countdown > 0 && autoClose > 0) {
       clearTime.current = window.setInterval(() => {
         console.log(countdown)
         if (countdown > 1) {
@@ -105,8 +118,6 @@ const Dialog: React.FC<Props> = (props) => {
     }
     // 点确定并且绑定了回调事件时，由确定回调关闭
     // 自动关闭时不处理，即时间没到也可以点确定取消直接关闭
-    // console.log('props.callback')
-    // console.log(props.callback)
     if (!props.autoClose && type === 'confirm' && props.callback) {
       // emit('callback', close) // 将关闭方法传出去
       props.callback(close) // 回调时使用return true关闭
@@ -115,15 +126,15 @@ const Dialog: React.FC<Props> = (props) => {
     }
     if (props.beforeClose && !props.beforeClose(type, close)) {
       // beforeClose返回false时阻止关闭
-      // props.beforeClose(type, close)
       return false
     } else {
       close()
-      props.onClose && props.onClose()
     }
   }
   // 处理动画
+  const clearVisibleTime = useRef(0)
   const setTimeOutVisible = (visible?: boolean) => {
+    clearVisibleTime.current && window.clearTimeout(clearVisibleTime.current)
     // 兼容在dialog组件里修改visible来关闭时显示动画
     let cssClass = `dialog-${props.animation || 'fade'}-exit-active` // 退出
     if (visible) {
@@ -131,12 +142,12 @@ const Dialog: React.FC<Props> = (props) => {
       cssClass = `dialog-${props.animation || 'fade'}-enter-active`
     }
     setCssTransition(cssClass)
-    window.setTimeout(() => {
+    clearVisibleTime.current = window.setTimeout(() => {
       if (!visible) {
         setVisible(false)
       }
       setCssTransition('')
-    }, props.animationDuration || 500)
+    }, animationDuration)
   }
   const close = () => {
     if (autoClose) {
@@ -145,6 +156,10 @@ const Dialog: React.FC<Props> = (props) => {
     // message方法时移除，延时移除可保留过渡动画
     setTimeOutVisible(false)
     setScrollBarLock(false) // 解锁
+    // 等待动画完成后执行
+    setTimeout(() => {
+      props.onClose && props.onClose()
+    }, animationDuration)
   }
   const setScrollBarLock = (bool: boolean) => {
     if (props.lockScroll) {
@@ -218,7 +233,11 @@ const Dialog: React.FC<Props> = (props) => {
       iconName = icon + ''
   }
   const dialogHtml = (<div
-    className={classNames(`${prefixCls}-dialog-modal`, cssTransition, {modal: !modal, center: props.center})}
+    className={classNames(`${prefixCls}-dialog-modal`, cssTransition, {
+      modal: !modal,
+      center: props.center,
+      'is-visible': visible
+    })}
     style={{zIndex: zIndex, display: visible ? '' : 'none'}}
     onClick={() => {
       btnClick('modal')

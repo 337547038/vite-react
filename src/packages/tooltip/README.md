@@ -162,17 +162,18 @@ export default Example
 
 ### Tooltip Props
 
-| 参数           | 类型            | 说明                       |
-|--------------|---------------| -------------------------- |
-| content      | String        | 显示的内容   |
+| 参数           | 类型            | 说明                                                                                           |
+|--------------|---------------|----------------------------------------------------------------------------------------------|
+| content      | String        | 显示的内容                                                                                        |
 | direction    | String        | 显示方向。有 top-left、top、top-right、left、right、bottom-left、bottom、bottom-right 共 8 个方向，默认 top-left |
-| maxWidth     | Number/500    | 最大显示宽                 |
-| delay        | Number/0      | 延时关闭时间，单位毫秒。主要是为了能让鼠标移到提示文字上面，实现点链接等 |
-| always       | Boolean/false | 是否总是可见               |
-| x            | Number        | 弹出窗距离触发点 x 轴方向的距离，可用于微调距离 |
-| y            | Number        | 弹出窗距离触发点 y 轴方向的距离，可用于微调距离 |
-| transition   | String        | 自定义显示隐藏过渡动画名称，需要手动添加相应的 css 样式 |
-| appendToBody | Boolean/true  | 提示内容是否插入到 body    |
-| className    | String        | 自定样式类名               |
-| trigger      | String/hover  | 事件触发方式，hover/click 两种 |
-| onClick      | fn            | 点击事件，trigger=click 时 |
+| maxWidth     | Number/500    | 最大显示宽                                                                                        |
+| delay        | Number/0      | 延时关闭时间，单位毫秒。主要是为了能让鼠标移到提示文字上面，实现点链接等                                                         |
+| always       | Boolean/false | 是否总是可见                                                                                       |
+| x            | Number        | 弹出窗距离触发点 x 轴方向的距离，可用于微调距离                                                                    |
+| y            | Number        | 弹出窗距离触发点 y 轴方向的距离，可用于微调距离                                                                    |
+| transition   | String        | 自定义显示隐藏过渡动画名称，需要手动添加相应的 css 样式                                                               |
+| appendToBody | Boolean/true  | 提示内容是否插入到 body                                                                               |
+| className    | String        | 自定样式类名                                                                                       |
+| trigger      | String/hover  | 事件触发方式，hover/click 两种                                                                        |
+| onClick      | fn            | 点击事件，trigger=click 时                                                                         |
+| disabled     | Boolean       | 禁用                                                                                           |

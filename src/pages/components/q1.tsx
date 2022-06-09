@@ -2,51 +2,72 @@ import React, {ReactElement, useCallback, useState, useRef, useEffect} from "rea
 import {Tabs, TabPane} from '../../packages/tabs'
 import {SwitchTransition, CSSTransition} from "react-transition-group";
 import {Menu} from '../../packages/menu'
+import {Switch} from '../../packages/switch'
 
 function Example() {
   const items = [
     {
-      label: 'Nav One',
-      key: 'a',
-      icon: 'user'
-    },
-    {
-      label: 'Nav Two',
-      key: 'b',
-      icon: 'search',
+      label: '用户管理',
+      key: 'user',
+      icon: 'user',
       children: [
         {
-          label: 'option1',
-          key:'option1',
-          children: [
-            {
-              label: 'option11',
-              key:'option11',
-            },
-            {
-              label: 'option12',
-              key:'option12',
-            }
-          ]
+          label: '用户列表',
+          key: 'a1'
         },
         {
-          label: 'option2',
-          key:'option2',
-        },
-        {
-          label: 'option3',
-          key:'option3',
+          label: '添加用户',
+          key: 'a2'
         }
       ]
     },
     {
-      label: 'Nav Three',
-      key: 'c',
+      label: 'Navigator Two',
+      key: 'b',
+      icon: 'search',
+      children: [
+        {
+          label: 'item one',
+          key: 'b1',
+          children: [
+            {
+              label: 'item two',
+              key: 'b2',
+            },
+            {
+              label: 'item three',
+              key: 'b3',
+            }
+          ]
+        },
+        {
+          label: 'item one',
+          key: 'b4',
+        },
+        {
+          label: 'item one',
+          key: 'b5',
+        }
+      ]
+    },
+    {
+      label: '系统设置',
+      key: 'set',
       icon: 'date',
       disabled: true
     }
   ]
-  return (<Menu items={items} mode="horizontal"/>)
+  const [collapse, setCollapse] = useState<boolean>(true)
+  const onChange = (val: any) => {
+    setCollapse(val)
+  }
+  return (<div style={{width: 200}}>
+    <div><Switch onChange={onChange} defaultValue={collapse}></Switch></div>
+    <Menu items={items} mode="vertical" collapse={collapse} />
+    <p>dark主题</p>
+    <Menu items={items} mode="vertical" theme='dark' collapse={collapse} />
+  </div>)
 }
 
 export default Example
+
