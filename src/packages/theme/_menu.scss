@@ -81,7 +81,7 @@
       ul{background: rgb(68 75 80);}
       li {
         &:hover {
-          > .menu-title {background: $primaryColor;}
+          > .menu-title {background: $primaryColor;color: #fff}
         }
         &.is-down {
           > .menu-title {color: #fff;

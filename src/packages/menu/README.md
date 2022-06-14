@@ -18,7 +18,7 @@ const items = [
       },
       {
         label: '添加用户',
-        key: 'aa'
+        key: 'ab'
       }
     ]
   },
@@ -94,6 +94,7 @@ export default Example
 ### Collapse
 
 ```jsx
+import {Switch} from '../switch'
 function Example() {
   const [collapse, setCollapse] = useState < boolean > (true)
   const onChange = (val: any) => {

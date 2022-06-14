@@ -612,19 +612,9 @@ function Example() {
       colSpan: 2
     },
     {
-      row: 0, // 对应于前面将第一行第3单元格设置不显示
-      col: 2,
-      colSpan: 0
-    },
-    {
       row: 2,
       col: 3,
       rowSpan: 2
-    },
-    {
-      row: 3,
-      col: 3,
-      rowSpan: 0
     }
   ]
   return (<div className='demo-table'>

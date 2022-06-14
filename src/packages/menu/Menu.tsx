@@ -50,6 +50,9 @@ const Menu: React.FC<Props> = (props) => {
     }
   }
   const onClick = (item: Items, evt: React.MouseEvent) => {
+    if (item.disabled) {
+      return
+    }
     if (trigger === 'click' || mode === 'vertical') {
       pushOrSplice(item, !visibleKeys.current?.includes(item.key))
     }

@@ -10,7 +10,7 @@ import classNames from 'classnames'
 import {prefixCls} from '../prefix'
 import TableHead from './TableHeader'
 import type {TableHeaderRef} from './TableHeader'
-import type {Props, TableRef, ColumnsProps} from './types'
+import type {Props, TableRef, ColumnsProps, rowColType} from './types'
 import {debounce} from "../util"
 import {Checkbox} from "../checkbox";
 import {getOffset} from '../util/dom'
@@ -378,6 +378,7 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
   }, [props.columns])
   useEffect(() => {
     fixedHead()
+    formatRowColSpan()
   }, [])
   useEffect(() => {
     console.log('数据改变')
@@ -476,9 +477,40 @@ const Table = forwardRef((props: Props, ref: React.Ref<TableRef>) => {
     props.cellClick && props.cellClick(row, column, rowIndex, columnIndex)
   }
   // 合并相关
+  const newRowColSpan = useRef<rowColType[]>(props.rowColSpan || [])
+  // 设置了合并后这里简单的计算下合并后不需要显示的行或列
+  const formatRowColSpan = () => {
+    const temp: rowColType[] = []
+    if (props.rowColSpan && props.rowColSpan.length > 0) {
+      props.rowColSpan.forEach((item: rowColType) => {
+        temp.push(item)
+        if (item.colSpan && item.colSpan > 1) {
+          // 计算不需要显示的列
+          for (let i = 1; i < item.colSpan; i++) {
+            temp.push({
+              row: item.row,
+              col: item.col + i,
+              colSpan: 0
+            })
+          }
+        }
+        // 计算不需要显示的行
+        if (item.rowSpan && item.rowSpan > 1) {
+          for (let i = 1; i < item.rowSpan; i++) {
+            temp.push({
+              row: item.row + i,
+              col: item.col,
+              rowSpan: 0
+            })
+          }
+        }
+      })
+    }
+    newRowColSpan.current = temp
+  }
   const getRowColSpan = (rowIndex: number, colIndex: number) => {
     let temp: { rowSpan?: number, colSpan?: number, style?: ObjKey } = {}
-    props.rowColSpan && props.rowColSpan.forEach(item => {
+    newRowColSpan.current.forEach((item: rowColType) => {
       if (rowIndex === item.row && colIndex === item.col) {
         if (item.rowSpan === 0 || item.colSpan === 0) {
           temp.style = {display: 'none'}

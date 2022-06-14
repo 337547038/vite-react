@@ -11,7 +11,7 @@ export interface Props {
   maxWidth?: number
   delay?: number // 鼠标移开后延时移除时间，主要能够让鼠标移动提示文字上，单位毫秒
   always?: boolean
-  appendToBody?: boolean
+  appendToBody?: boolean // 设置为false目前样式及定位不兼容，需自定义样式
   transition?: string
   x?: number // x轴微调
   y?: number // 当前标签与提示语之间的距离，用于微调/

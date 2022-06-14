@@ -4,7 +4,7 @@ interface ObjKey {
   [key: string]: any
 }
 
-interface rowColType {
+export interface rowColType {
   col: number
   row: number
   colSpan?: number
