@@ -1,10 +1,5 @@
 @charset "utf-8";
-@include ns(date-picker) {display: inline-block; position: relative;
-  .select-control .group-icon{
-   .down{transform: rotate(0deg)}
-  }
-}
-@include ns(date-picker-down) { position: absolute; background: #fff; border: 1px solid $borderColor; box-shadow: 0 1px 6px #ddd; z-index: 99; padding: 5px; overflow: hidden;box-sizing: border-box;
+@include ns(date-picker) { position: absolute; background: #fff; border: 1px solid $borderColor; box-shadow: 0 1px 6px #ddd; z-index: 99; padding: 5px; overflow: hidden;box-sizing: border-box;min-width: 100%;
   .calendar {display: block; user-select: none;width: 250px;
     &:nth-child(2) { margin-left: 10px; }
   }

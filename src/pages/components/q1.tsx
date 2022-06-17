@@ -1,71 +1,35 @@
 import React, {ReactElement, useCallback, useState, useRef, useEffect} from "react";
 import {Tabs, TabPane} from '../../packages/tabs'
 import {SwitchTransition, CSSTransition} from "react-transition-group";
-import {Menu} from '../../packages/menu'
 import {Switch} from '../../packages/switch'
+import {DatePicker} from '../../packages/datePicker'
+import {SelectDown} from "../../packages/selectDown";
 
 function Example() {
-  const items = [
-    {
-      label: '用户管理',
-      key: 'user',
-      icon: 'user',
-      children: [
-        {
-          label: '用户列表',
-          key: 'a1'
-        },
-        {
-          label: '添加用户',
-          key: 'a2'
-        }
-      ]
-    },
-    {
-      label: 'Navigator Two',
-      key: 'b',
-      icon: 'search',
-      children: [
-        {
-          label: 'item one',
-          key: 'b1',
-          children: [
-            {
-              label: 'item two',
-              key: 'b2',
-            },
-            {
-              label: 'item three',
-              key: 'b3',
-            }
-          ]
-        },
-        {
-          label: 'item one',
-          key: 'b4',
-        },
-        {
-          label: 'item one',
-          key: 'b5',
-        }
-      ]
-    },
-    {
-      label: '系统设置',
-      key: 'set',
-      icon: 'date',
-      disabled: true
-    }
-  ]
-  const [collapse, setCollapse] = useState<boolean>(true)
-  const onChange = (val: any) => {
-    setCollapse(val)
+  const [value1, setValue1] = React.useState([])
+  const [value2, setValue2] = React.useState('2019-06-01')
+  const [value3, setValue3] = React.useState('')
+  const onChange = (type: any, val: any) => {
+    console.log('')
   }
-  return (<div style={{width: 200}}>
-    <div><Switch onChange={onChange} defaultValue={collapse}></Switch></div>
-    <Menu items={items} mode="vertical" collapse={collapse} />
-    <p>dark主题</p>
-    <Menu items={items} mode="vertical" theme='dark' collapse={collapse} />
+  return (<div className='demo-date-picker'>
+    <div>选择的值：{value1}<br />
+      <DatePicker
+        defaultValue={value1}
+        placeholder="请选择时间"
+        onChange={onChange.bind(this, '1')} />
+    </div>
+    {/*<div>选择的值：{value2}<br />
+      <DatePicker defaultValue={value2} placeholder="请选择时间" onChange={onChange.bind(this, '2')} />
+    </div>
+    <div>选择的值：{value3}<br />
+      <DatePicker
+        defaultValue={value3}
+        placeholder="请选择时间"
+        disabled={true}
+        onChange={onChange.bind(this, '3')}
+      />
+    </div>*/}
   </div>)
 }
 
