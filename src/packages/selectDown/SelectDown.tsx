@@ -47,6 +47,7 @@ export interface Props {
   isRange?: boolean // 区间选择，此时multiple无效
   rangeSeparator?: string // isRange时分隔符
   endPlaceholder?: string // isRange时第二个输入框
+  onClear?: () => void // 清空事件
 }
 
 const SelectDown = forwardRef<SelectDownRef, Props>((props, ref) => {
@@ -61,7 +62,6 @@ const SelectDown = forwardRef<SelectDownRef, Props>((props, ref) => {
   const downEl = useRef<HTMLDivElement>(null)
   const [cssTransition, setCssTransition] = useState<string>('')
   useEffect(() => {
-    // console.log(defaultValue)
     setValue([...defaultValue])
   }, [props.defaultValue])
   let downHeightStyle = {}
@@ -208,7 +208,7 @@ const SelectDown = forwardRef<SelectDownRef, Props>((props, ref) => {
   const clearClick = (evt: React.MouseEvent<HTMLDivElement>) => {
     setValue([])
     clearValue()
-    props.onInput && props.onInput('', [])
+    props.onClear && props.onClear()
     evt.stopPropagation()
   }
   const downPaneClick = (evt: React.MouseEvent<HTMLDivElement>) => {
@@ -248,7 +248,7 @@ const SelectDown = forwardRef<SelectDownRef, Props>((props, ref) => {
       <input
         ref={inputStart}
         key="start"
-        value={value[0]}
+        value={value[0]||''}
         readOnly={!props.filterable}
         placeholder={props.placeholder}
         disabled={disabled}
@@ -260,7 +260,7 @@ const SelectDown = forwardRef<SelectDownRef, Props>((props, ref) => {
       <input
         ref={endStart}
         key="end"
-        value={value[1]}
+        value={value[1]||''}
         readOnly={!props.filterable}
         placeholder={props.endPlaceholder}
         disabled={disabled}

@@ -5,6 +5,7 @@ import {CheckboxGroup} from '../checkbox'
 import {Select} from '../select'
 import {Switch} from '../switch'
 import {Textarea} from '../textarea'
+import {DatePicker} from '../datePicker'
 import {getValueRef} from "../form/types"
 
 interface Props {
@@ -46,6 +47,9 @@ const Field = forwardRef<getValueRef, Props>((props, ref) => {
       break
     case 'textarea':
       currentComponent = (<Textarea {...props.data} defaultValue={defaultValue} onChange={onChange} />)
+      break
+    case 'datePicker':
+      currentComponent = (<DatePicker {...props.data} defaultValue={defaultValue} onChange={onChange} />)
       break
     default:
       currentComponent = (<Input {...props.data} defaultValue={defaultValue} onChange={onChange} />)

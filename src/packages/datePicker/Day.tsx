@@ -3,11 +3,12 @@ import classNames from 'classnames'
 
 interface Props {
   value: Date // 显示于面板的值
-  defaultDate: Date // 传进来的初始值，在当前面板点击选中时会改变
+  defaultDate: number // 传进来的初始值，在当前面板点击选中时会改变
   type: string
-  onClick: (val: Date) => void
+  onClick: (val: Date, type?: string) => void
   disabledDate?: (val: Date, type: string) => boolean
   innerText?: (val: Date) => string
+  index: number
 }
 
 interface Days {
@@ -18,9 +19,23 @@ interface Days {
   n?: boolean // 下一个月
 }
 
-const Day: React.FC<Props> = (props) => {
+interface dateTime {
+  hours: string
+  minutes: string
+  seconds: string
+}
+
+export interface DayRef {
+  reset: () => void
+}
+
+const Day = React.forwardRef<DayRef, Props>((props, ref) => {
   const [days, setDays] = React.useState<Days[]>([])
-  const [checkedValue, setCheckedValue] = React.useState<Date>(props.defaultDate)
+  const [checkedValue, setCheckedValue] = React.useState<number>(props.defaultDate)
+  const [dateTime, setDateTime] = React.useState<dateTime>({hours: '', minutes: '', seconds: ''})
+  const padStart = (number: number | string) => {
+    return `${number}`.padStart(2, '0')
+  }
   const getDaysList = (date: Date) => {
     let days = []
     const year = date.getFullYear()
@@ -60,14 +75,19 @@ const Day: React.FC<Props> = (props) => {
       })
     }
     setDays([...days])
+    setDateTime({
+      hours: padStart(date.getHours()),
+      minutes: padStart(date.getMinutes()),
+      seconds: padStart(date.getSeconds())
+    })
   }
   const isDisabled = (date: Date) => {
     return props.disabledDate && props.disabledDate(date, 'day')
   }
   const dayClass = (item: Days) => {
     // 添加相对应样式，今天、禁用
-    let time = new Date(item.y, item.m, item.d)
-    let time2 = checkedValue.toDateString() // 这里用初始值，否则选了上下年月，会一直选中一天
+    const time = new Date(item.y, item.m, item.d)
+    const time2 = new Date(checkedValue).toDateString() // 这里用初始值，否则选了上下年月，会一直选中一天
     return classNames({
       'calendar-date-out': item.p || item.n, // 非当前月
       'calendar-date-today': time.toDateString() === new Date().toDateString(), // 今天的
@@ -76,12 +96,12 @@ const Day: React.FC<Props> = (props) => {
     })
   }
   const selectDay = (item: Days) => {
-    const date = new Date(item.y, item.m, item.d)
-    if (isDisabled(date)) {
-      const date = new Date(item.y, item.m, item.d)
+    const date = new Date(item.y, item.m, item.d, parseInt(dateTime.hours, 10), parseInt(dateTime.minutes, 10), parseInt(dateTime.seconds, 10))
+    if (!isDisabled(date)) {
+      // const date = new Date(item.y, item.m, item.d)
+      setCheckedValue(date.getTime())
       if (props.type === 'datetime') {
         // 有时分秒选择时不关闭，保存选中值
-        setCheckedValue(date)
       } else {
         props.onClick(date)
       }
@@ -91,6 +111,32 @@ const Day: React.FC<Props> = (props) => {
     const time = new Date(item.y, item.m, item.d)
     return props.innerText && props.innerText(time)
   }
+  const selectConfirm = () => {
+    let newDate = props.value
+    if (checkedValue) {
+      newDate = new Date(checkedValue)
+    }
+    props.onClick(newDate, 'confirm')
+  }
+  const inputChange = (type: string, evt: React.ChangeEvent, isBlur?: boolean) => {
+    const {value} = evt.target as HTMLInputElement
+    if (!/[^\d]/g.test(value)) {
+      const val = isBlur ? padStart(value) : value
+      setDateTime({...dateTime, [type]: val})
+    }
+  }
+  // 焦点事件时全选
+  const onFocus = (evt: React.ChangeEvent) => {
+    (evt.currentTarget as HTMLInputElement).select()
+  }
+  /*// 失去焦点会变为两位
+  const onBlur = (type: string, evt: React.ChangeEvent) => {
+    inputChange(type, evt, true)
+  }*/
+  const reset = () => {
+    setCheckedValue(props.defaultDate)
+  }
+  React.useImperativeHandle(ref, () => ({reset}))
   React.useEffect(() => {
     getDaysList(props.value)
   }, [props.value])
@@ -110,12 +156,41 @@ const Day: React.FC<Props> = (props) => {
           key={index}
           className={dayClass(item)}
           onClick={() => selectDay(item)}
-        >
+        ><span>
           {item.d}
           {innerText(item) ?
-            <span>{innerText(item)}</span> : ''}
+            <i>{innerText(item)}</i> : ''}</span>
         </a>)}
     </div>
+    {props.type === 'datetime' || props.type === 'datetimeRange' ?
+      <div className="calendar-time">
+        <div className="calendar-time-input">
+          <input
+            value={dateTime?.hours}
+            type="text"
+            maxLength={2}
+            onChange={inputChange.bind(this, 'hours')}
+            onFocus={onFocus}
+          />:
+          <input
+            value={dateTime?.minutes}
+            type="text"
+            maxLength={2}
+            onChange={inputChange.bind(this, 'minutes')}
+            onFocus={onFocus}
+          />:
+          <input
+            value={dateTime?.seconds}
+            type="text"
+            maxLength={2}
+            onChange={inputChange.bind(this, 'seconds')}
+            onFocus={onFocus}
+          />
+        </div>
+        {props.type === 'datetime' || (props.type === 'datetimeRange' && props.index === 1) ?
+          <a className="btn-time" onClick={selectConfirm}>确定</a> : ''}
+      </div> : ''}
   </div>)
-}
+})
+Day.displayName = 'Day'
 export default Day

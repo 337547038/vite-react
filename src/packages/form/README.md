@@ -8,8 +8,13 @@ import {Form} from './index'
 import {FormItem} from '../formItem'
 import {Input} from '../input'
 import {Button} from '../button'
+
 function Example() {
-  const [formValue, setFormValue] = useState<{ [key: string]: any }>({
+  const [formValue, setFormValue] = useState < {[key: string
+]:
+  any
+}>
+  ({
     userName: 'userName',
     password: 'passwordValue',
     password2: 'passwordValue'
@@ -31,7 +36,7 @@ function Example() {
     ],
     userName: [{type: 'required', msg: '用户名不能为空'}]
   }
-  const formEl = useRef<FormRef>(null)
+  const formEl = useRef < FormRef > (null)
   const submit = () => {
     formEl.current?.validate()
       .then((res) => {
@@ -59,7 +64,8 @@ function Example() {
   }
   return (<div className='form-demo'>
     <Form rules={formRules} ref={formEl} onChange={formOnChange}>
-      <FormItem label="userName" prop="userName" type='input' defaultValue={formValue.userName} data={{placeholder:"请输入用户名"}}>
+      <FormItem label="userName" prop="userName" type='input' defaultValue={formValue.userName}
+                data={{placeholder: "请输入用户名"}}>
       </FormItem>
       <FormItem label="password" prop="password">
         <Input defaultValue={formValue.password} placeholder="请输入密码" onChange={onChange} />
@@ -74,6 +80,7 @@ function Example() {
     <Button onClick={setValue}>setValue</Button>
   </div>)
 }
+
 export default Example
 ```
 
@@ -92,7 +99,7 @@ function Example() {
     number: '100.00',
     switch: false
   }
-  const formEl = useRef<FormRef>(null)
+  const formEl = useRef < FormRef > (null)
   const options = [
     {label: '选项1', value: '1'},
     {label: '选项2', value: '2'},
@@ -119,8 +126,8 @@ function Example() {
     checkboxGroup: [{type: 'required', msg: '不能为空'}],
     textarea: [{type: 'required', msg: 'textarea不能为空'}],
     radio: [{type: 'required', msg: 'radio不能为空'}],
-    /*datePicker: [{type: 'required', msg: '请选择日期'}],
-    timePicker: [{type: 'required', msg: '请选择时间'}],
+    datePicker: [{type: 'required', msg: '请选择日期'}],
+    /*timePicker: [{type: 'required', msg: '请选择时间'}],
     timeSelect: [{type: 'required', msg: '请选择时间'}]*/
   }
   // 重置
@@ -167,7 +174,7 @@ function Example() {
 
         <FormItem prop="digits" label="digits" type='input' />
 
-        <FormItem prop="number" label="number" type='input'  defaultValue={formValue.number}/>
+        <FormItem prop="number" label="number" type='input' defaultValue={formValue.number} />
 
         <FormItem prop="tel" label="tel" type='input' data={{placeholder: "请输入电话号码"}} />
 
@@ -200,7 +207,9 @@ function Example() {
         {/*<FormItem label="datePicker" prop="datePicker">
         <ak-date-picker defaultValue="formValue.datePicker" placeholder="请选择" />
       </FormItem>*/}
-        <FormItem label="switch" type='switch' prop='switch' defaultValue={formValue.switch}/>
+        <FormItem label="switch" type='switch' prop='switch' defaultValue={formValue.switch} />
+        <FormItem label="datePicker" type='datePicker' prop='datePicker' defaultValue={formValue.datePicker}
+                  data={{placeholder: '请选择时间'}} />
 
         {/*<FormItem label="timePicker" prop="timePicker">
         <ak-time-picker defaultValue="formValue.timePicker" />

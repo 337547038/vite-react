@@ -220,6 +220,12 @@ const Select = forwardRef((props: Props, ref: React.Ref<SelectRef>) => {
   const clearValue = () => {
     refEl.current?.clearValue()
   }
+  // 清空事件
+  const onClear = () => {
+    setValue([])
+    setLabelText([])
+    props.onChange && props.onChange('')
+  }
   useImperativeHandle(ref, () => ({getValue, clearValue}))
   const newProps = omit(props, ['options', 'multipleLimit', 'optionsKey', 'beforeChange', 'async', 'emptyText'])
   return (
@@ -230,6 +236,7 @@ const Select = forwardRef((props: Props, ref: React.Ref<SelectRef>) => {
       onInput={onInput}
       onDelete={onDelete}
       toggleClick={toggleClick}
+      onClear={onClear}
       ref={refEl}>
       <ul className={`${prefixCls}-select`}>
         {optionsList.map((item: Record<string, string>, index: number) =>
