@@ -3,7 +3,7 @@ import React from 'react'
 interface Props {
   activePanel: string // 当前面板
   value: Date
-  onChange: (val: Date, position: string, type?: string) => void
+  onChange: (val: Date| string) => void
   type: string
   position?: 'left' | 'right' // 区间选择时有左右两个
 }
@@ -27,7 +27,7 @@ const ControlHead: React.FC<Props> = (props) => {
       num = -num
     }
     const nextDate = new Date(props.value.setFullYear(year + num))
-    props.onChange(nextDate, position)
+    props.onChange(nextDate)
   }
   const monthClick = (type: number) => {
     // 前后月切换点击，只有在日期面板时显示，年或年月面板不显示
@@ -37,10 +37,10 @@ const ControlHead: React.FC<Props> = (props) => {
       num = -num
     }
     const nextDate = new Date(props.value.setMonth(month + num))
-    props.onChange(nextDate, position)
+    props.onChange(nextDate)
   }
   const panelTypeClick = (type: string) => {
-    props.onChange(props.value, position, type)
+    props.onChange(type)
   }
   const isShow = (type: number) => {
     // 0 往前 1 向后

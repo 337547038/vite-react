@@ -80,7 +80,7 @@ const YearMonth = React.forwardRef<YearMonthRef, Props>((props, ref) => {
     }
   }
   const reset = () => {
-    // setCheckedValue(props.defaultDate)
+    setCheckedValue(props.defaultDate)
   }
   React.useEffect(() => {
     setCheckedValue(props.defaultDate)

@@ -179,15 +179,15 @@ const SelectDown = forwardRef<SelectDownRef, Props>((props, ref) => {
       value[1] = val
       setValue([...value])
     }
-    mouseEvent(evt, 'onInput')
+    mouseEvent(evt, 'onInput', type)
   }
-  const inputFocus = (evt: MouseEvent | React.ChangeEvent) => {
-    mouseEvent(evt, 'onFocus')
+  const inputFocus = (index: string, evt: MouseEvent | React.ChangeEvent) => {
+    mouseEvent(evt, 'onFocus', index)
   }
-  const inputBlur = (evt: MouseEvent | React.ChangeEvent) => {
-    mouseEvent(evt, 'onBlur')
+  const inputBlur = (index: string, evt: MouseEvent | React.ChangeEvent) => {
+    mouseEvent(evt, 'onBlur', index)
   }
-  const mouseEvent = (evt: MouseEvent | React.ChangeEvent, type: string) => {
+  const mouseEvent = (evt: MouseEvent | React.ChangeEvent, type: string, index: string) => {
     if (props.filterable) {
       let val: string = (evt.target as HTMLInputElement).value
       /*if (props.isRange) {
@@ -195,7 +195,7 @@ const SelectDown = forwardRef<SelectDownRef, Props>((props, ref) => {
       }*/
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      props[type] && props[type](val, value, evt)
+      props[type] && props[type](val, index, evt)
     }
   }
   const deleteText = (index: number, evt: React.MouseEvent<HTMLDivElement>) => {
@@ -208,8 +208,8 @@ const SelectDown = forwardRef<SelectDownRef, Props>((props, ref) => {
   const clearClick = (evt: React.MouseEvent<HTMLDivElement>) => {
     setValue([])
     clearValue()
-    props.onClear && props.onClear()
     evt.stopPropagation()
+    props.onClear && props.onClear()
   }
   const downPaneClick = (evt: React.MouseEvent<HTMLDivElement>) => {
     evt.stopPropagation()
@@ -248,25 +248,25 @@ const SelectDown = forwardRef<SelectDownRef, Props>((props, ref) => {
       <input
         ref={inputStart}
         key="start"
-        value={value[0]||''}
+        value={value[0] || ''}
         readOnly={!props.filterable}
         placeholder={props.placeholder}
         disabled={disabled}
         onChange={inputInput.bind(this, 'start')}
-        onFocus={inputFocus}
-        onBlur={inputBlur}
+        onFocus={inputFocus.bind(this, 'start')}
+        onBlur={inputBlur.bind(this, 'start')}
       />
       <span>{props.rangeSeparator}</span>
       <input
         ref={endStart}
         key="end"
-        value={value[1]||''}
+        value={value[1] || ''}
         readOnly={!props.filterable}
         placeholder={props.endPlaceholder}
         disabled={disabled}
         onChange={inputInput.bind(this, 'end')}
-        onFocus={inputFocus}
-        onBlur={inputBlur}
+        onFocus={inputFocus.bind(this, 'start')}
+        onBlur={inputBlur.bind(this, 'start')}
       />
     </div>)
   const isMultipleHtml = (
@@ -302,8 +302,8 @@ const SelectDown = forwardRef<SelectDownRef, Props>((props, ref) => {
               disabled={disabled}
               placeholder={value?.length === 0 ? props.placeholder : ''}
               onChange={inputInput.bind(this, 'multiple')}
-              onFocus={inputFocus}
-              onBlur={inputBlur}
+              onFocus={inputFocus.bind(this, 'multiple')}
+              onBlur={inputBlur.bind(this, 'multiple')}
             />
           </li> : ''}
       </ul>
@@ -318,8 +318,8 @@ const SelectDown = forwardRef<SelectDownRef, Props>((props, ref) => {
       className={classNames(inputCls)}
       disabled={disabled}
       onChange={inputInput.bind(this, 'normal')}
-      onFocus={inputFocus}
-      onBlur={inputBlur}
+      onFocus={inputFocus.bind(this, 'normal')}
+      onBlur={inputBlur.bind(this, 'normal')}
     />
   )
   const downPaneHtml = (

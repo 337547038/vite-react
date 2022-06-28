@@ -10,6 +10,8 @@ function Example(){
   return (<div className='demo-date-picker'>
     <div>
       <DatePicker
+        type='date'
+        defaultValue={'2022/8/20'}
         placeholder="请选择时间"
         readonly={false}
         clear={true}

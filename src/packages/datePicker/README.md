@@ -249,14 +249,14 @@ import React from 'react'
 function Example(){
   return(<div className='demo-date-picker'>
     <div>
-      月日小于10时，前面不加0
+      月日小于10时，前面不加0<br/>
       <DatePicker
         placeholder="请选择时间"
         format="y-M-d"
       />
     </div>
     <div>
-      显示年月日格式
+      显示年月日格式<br/>
       <DatePicker
         placeholder="请选择时间"
         format="y年MM月dd日 星期w"
@@ -264,7 +264,7 @@ function Example(){
       />
     </div>
     <div>
-      显示时间戳
+      显示时间戳<br/>
       <DatePicker
         placeholder="请选择时间"
         format="timestamp"
