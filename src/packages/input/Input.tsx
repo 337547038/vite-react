@@ -1,7 +1,7 @@
 import React, {forwardRef, useRef, useImperativeHandle, useState, useContext, useEffect} from 'react'
 import classNames from 'classnames'
 import {prefixCls} from '../prefix'
-import {FormItemContext} from '../form/contextForm'
+import { FormItemContext } from '../form/contextForm'
 import type {getValueRef} from '../form/types'
 
 interface Props {
@@ -33,21 +33,21 @@ export interface InputRef extends getValueRef {
 }
 
 const Input = forwardRef<InputRef, Props>((props, ref) => {
-  const [value, setValue] = useState(props.defaultValue)
+  const [currentValue, setCurrentValue] = useState(props.defaultValue)
   const [eyeShow, setEyeShow] = useState(props.showEye)
   const [inputType, setInputType] = useState(props.type)
   const inputEl = useRef<{ focus: () => void }>(null)
   const useFormItemContext = useContext(FormItemContext)
   // 取值方法
   const getValue = () => {
-    return value
+    return currentValue
   }
   // 设置焦点事件
   const focus = () => {
     inputEl.current?.focus()
   }
   const clear = () => {
-    setValue('')
+    setCurrentValue('')
   }
   // 将子组件方法暴露给父组件
   useImperativeHandle(ref, () => ({getValue, focus, clear}))
@@ -61,7 +61,7 @@ const Input = forwardRef<InputRef, Props>((props, ref) => {
   }
   const onChange = (evt: React.ChangeEvent) => {
     const {value} = evt.target as HTMLInputElement
-    setValue(value)
+    setCurrentValue(value)
     props.onChange && props.onChange(value, evt)
     setFormItemContext(value, 'change')
   }
@@ -77,7 +77,7 @@ const Input = forwardRef<InputRef, Props>((props, ref) => {
   }
   // 清空
   const clearValue = () => {
-    setValue('')
+    setCurrentValue('')
     setFormItemContext('', 'change')
   }
   const showEyeClick = () => {
@@ -90,7 +90,7 @@ const Input = forwardRef<InputRef, Props>((props, ref) => {
     }
   }
   useEffect(() => {
-    setValue(props.defaultValue)
+    setCurrentValue(props.defaultValue)
     setFormItemContext(props.defaultValue || '', 'default')
   }, [props.defaultValue])
   return (
@@ -110,7 +110,7 @@ const Input = forwardRef<InputRef, Props>((props, ref) => {
         ref={inputEl as React.Ref<HTMLInputElement>}
         placeholder={props.placeholder}
         autoComplete="off"
-        value={value}
+        value={currentValue}
         type={inputType}
         name={props.name}
         maxLength={props.maxLength}
@@ -140,9 +140,9 @@ const Input = forwardRef<InputRef, Props>((props, ref) => {
       {props.suffixIcon ?
         <i className={props.suffixIcon} />
         : ''}
-        {props.clear && value ?
+        {props.clear && currentValue ?
           <i className="icon-close" onClick={clearValue} /> : ''}
-        {props.showEye && value && props.type === 'password' ?
+        {props.showEye && currentValue && props.type === 'password' ?
           <i className={classNames({'icon-eye-close': eyeShow, 'icon-eye': !eyeShow})}
              onClick={showEyeClick} /> : ''}
     </span>

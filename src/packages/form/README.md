@@ -8,12 +8,10 @@ import {Form} from './index'
 import {FormItem} from '../formItem'
 import {Input} from '../input'
 import {Button} from '../button'
+import type {FormRef} from './index'
 
 function Example() {
-  const [formValue, setFormValue] = useState < {[key: string
-]:
-  any
-}>
+  const [formValue, setFormValue] = useState < {[key: string]:any}>
   ({
     userName: 'userName',
     password: 'passwordValue',

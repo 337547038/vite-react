@@ -1,9 +1,9 @@
-import React, {forwardRef, useRef, useImperativeHandle} from 'react'
+import React, { forwardRef, useRef, useImperativeHandle } from 'react'
 import classNames from 'classnames'
-import {prefixCls} from '../prefix'
-import type {getValueRef, RulesObject} from "./types"
-import {FormPropsContext} from './contextForm'
-import {omit} from "../util"
+import { prefixCls } from '../prefix'
+import type { getValueRef, RulesObject } from "./types"
+import { FormPropsContext } from './contextForm'
+import { omit } from "../util"
 
 interface RulesArray {
   [key: string]: RulesObject[]
@@ -95,9 +95,9 @@ const Form = forwardRef((props: Props, ref: React.Ref<FormRef>) => {
         // 清除指定的
         if (field.includes(item.prop)) {
           item.clearTips()
-        } else {
-          item.clearTips()
         }
+      } else {
+        item.clearTips()
       }
     })
   }
@@ -107,10 +107,7 @@ const Form = forwardRef((props: Props, ref: React.Ref<FormRef>) => {
     console.log('恢复初始值开发中...')
     clearValidate()
   }
-  const setValue = (value: any) => {
-    // todo
-    console.log('开发中...')
-  }
+
   useImperativeHandle(ref, () => ({getValue, validate, clearValidate, resetForm, setValue}))
   const newFormProps = omit(props, ['children', 'className'])
   newFormProps.callback = (val: Callback) => {
@@ -119,10 +116,16 @@ const Form = forwardRef((props: Props, ref: React.Ref<FormRef>) => {
   newFormProps.onChange = (val: any, prop: string) => {
     props.onChange && props.onChange(val, prop)
   }
+  const setValue = (value: { [key:string]:any }) => {
+    // todo
+    console.log('开发中...')
+    console.log(value)
+    newFormProps.setValue=value
+  }
   return (
-    <FormPropsContext.Provider value={newFormProps}>
-      <form className={classNames(`${prefixCls}-form`, props.className)}>
-        {props.children}
+    <FormPropsContext.Provider value={ newFormProps }>
+      <form className={ classNames(`${ prefixCls }-form`, props.className) }>
+        { props.children }
       </form>
     </FormPropsContext.Provider>)
 })
