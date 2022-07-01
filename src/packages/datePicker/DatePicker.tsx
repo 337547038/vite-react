@@ -282,7 +282,7 @@ const DatePicker = forwardRef((props: Props, ref: React.Ref<getValueRef>) => {
       }*/
     }
   }
-  const onClickDay = (val: Date, typeClick?: string) => {
+  const onClickDay = (val: Date,index:number, typeClick?: string) => {
     // console.log(val)
     if (isRange) {
       if (type === 'datetimeRange') {
@@ -294,7 +294,7 @@ const DatePicker = forwardRef((props: Props, ref: React.Ref<getValueRef>) => {
             val1 = rangChecked.current[rangChecked.current.length - 1]
           }
           rangOnChange([val1, val])
-        } else {
+        } else if(index===0){
           rangChecked.current.push(val)
         }
       } else {

@@ -5,7 +5,7 @@ interface Props {
   value: Date // 显示于面板的值
   defaultDate: number // 传进来的初始值，在当前面板点击选中时会改变
   type: string
-  onClick: (val: Date, type?: string) => void
+  onClick: (val: Date, index: number, type?: string) => void
   disabledDate?: (val: Date, type: string) => boolean
   innerText?: (val: Date) => string
   index: number
@@ -34,7 +34,7 @@ const Day = React.forwardRef<DayRef, Props>((props, ref) => {
   const [checkedValue, setCheckedValue] = React.useState<number>(props.defaultDate)
   const [dateTime, setDateTime] = React.useState<dateTime>({hours: '', minutes: '', seconds: ''})
   const padStart = (number: number | string) => {
-    return `${number}`.padStart(2, '0')
+    return `${ number }`.padStart(2, '0')
   }
   const getDaysList = (date: Date) => {
     let days = []
@@ -103,7 +103,7 @@ const Day = React.forwardRef<DayRef, Props>((props, ref) => {
       if (props.type === 'datetime') {
         // 有时分秒选择时不关闭，保存选中值
       } else {
-        props.onClick(date)
+        props.onClick(date,props.index)
       }
     }
   }
@@ -116,13 +116,27 @@ const Day = React.forwardRef<DayRef, Props>((props, ref) => {
     if (checkedValue) {
       newDate = new Date(checkedValue)
     }
-    props.onClick(newDate, 'confirm')
+    props.onClick(newDate, props.index, 'confirm')
   }
   const inputChange = (type: string, evt: React.ChangeEvent, isBlur?: boolean) => {
     const {value} = evt.target as HTMLInputElement
     if (!/[^\d]/g.test(value)) {
       const val = isBlur ? padStart(value) : value
       setDateTime({...dateTime, [type]: val})
+      // 更新当前面板时间
+      const current = checkedValue ? new Date(checkedValue) : props.value
+      const num = parseInt(value, 10)
+      if (type === 'hours') {
+        current.setHours(num)
+      }
+      if (type === 'minutes') {
+        current.setMinutes(num)
+      }
+      if (type === 'seconds') {
+        current.setSeconds(num)
+      }
+      setCheckedValue(current.getTime())
+      props.onClick(current, props.index)
     }
   }
   // 焦点事件时全选
@@ -151,45 +165,45 @@ const Day = React.forwardRef<DayRef, Props>((props, ref) => {
       <a>六</a>
     </div>
     <div className="calendar-list">
-      {days.map((item: Days, index: number) =>
+      { days.map((item: Days, index: number) =>
         <a
-          key={index}
-          className={dayClass(item)}
-          onClick={() => selectDay(item)}
+          key={ index }
+          className={ dayClass(item) }
+          onClick={ () => selectDay(item) }
         ><span>
-          {item.d}
-          {innerText(item) ?
-            <i>{innerText(item)}</i> : ''}</span>
-        </a>)}
+          { item.d }
+          { innerText(item) ?
+            <i>{ innerText(item) }</i> : '' }</span>
+        </a>) }
     </div>
-    {props.type === 'datetime' || props.type === 'datetimeRange' ?
+    { props.type === 'datetime' || props.type === 'datetimeRange' ?
       <div className="calendar-time">
         <div className="calendar-time-input">
           <input
-            value={dateTime?.hours}
+            value={ dateTime?.hours }
             type="text"
-            maxLength={2}
-            onChange={inputChange.bind(this, 'hours')}
-            onFocus={onFocus}
+            maxLength={ 2 }
+            onChange={ inputChange.bind(this, 'hours') }
+            onFocus={ onFocus }
           />:
           <input
-            value={dateTime?.minutes}
+            value={ dateTime?.minutes }
             type="text"
-            maxLength={2}
-            onChange={inputChange.bind(this, 'minutes')}
-            onFocus={onFocus}
+            maxLength={ 2 }
+            onChange={ inputChange.bind(this, 'minutes') }
+            onFocus={ onFocus }
           />:
           <input
-            value={dateTime?.seconds}
+            value={ dateTime?.seconds }
             type="text"
-            maxLength={2}
-            onChange={inputChange.bind(this, 'seconds')}
-            onFocus={onFocus}
+            maxLength={ 2 }
+            onChange={ inputChange.bind(this, 'seconds') }
+            onFocus={ onFocus }
           />
         </div>
-        {props.type === 'datetime' || (props.type === 'datetimeRange' && props.index === 1) ?
-          <a className="btn-time" onClick={selectConfirm}>确定</a> : ''}
-      </div> : ''}
+        { props.type === 'datetime' || (props.type === 'datetimeRange' && props.index === 1) ?
+          <a className="btn-time" onClick={ selectConfirm }>确定</a> : '' }
+      </div> : '' }
   </div>)
 })
 Day.displayName = 'Day'
