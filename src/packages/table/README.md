@@ -92,6 +92,7 @@ export default Example
 `type="selection"`添加勾选框,`type="index"`添加序号,getSelectAll`方法可取已勾选行。
 
 ```jsx
+import {useRef} from 'react'
 import {Button} from '../button'
 import {Table} from './index'
 import type {TableRef} from "./index"

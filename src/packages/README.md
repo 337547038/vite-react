@@ -10,4 +10,3 @@
 ```javascript
 import Button from '../packages/button'
 ```
-

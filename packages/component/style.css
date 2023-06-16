@@ -1,0 +1,23 @@
+.doc-preview {border: 1px solid #eee; margin-bottom: 20px}
+
+.doc-preview .component {padding: 10px;}
+
+.doc-preview .control-tools {align-items: center;border-top: 1px solid #eee;color: #333;display: flex;justify-content: flex-end;padding: 5px 10px;}
+
+.doc-preview .tools {display: flex}
+
+.doc-preview .control-tools .text {flex: 2;text-align: center;visibility: hidden;opacity: 0;transition: all .3s;transform: translateX(100px);cursor: pointer}
+
+.doc-preview .control-tools:hover .text {visibility: visible;opacity: 1;transform: translateX(0px)}
+
+.doc-preview .fixed-tools {position: relative;color: #999}
+
+.doc-preview .fixed-tools .tools {position: absolute;right: 10px;top: 10px}
+
+.doc-preview .item {cursor: pointer;margin-left: 5px;}
+
+.doc-preview .item:hover {opacity: .6}
+
+.doc-preview .code {border-top: 1px solid #eee;padding: 0;}
+
+.doc-preview pre {border-radius: 0;margin: 0;}

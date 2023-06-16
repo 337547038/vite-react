@@ -173,7 +173,7 @@ export default Example
 import {DatePicker} from './index'
 import React from 'react'
 function Example() {
-  const [value, setValue] = useState('')
+  const [value, setValue] = React.useState('')
   const onChange = (val: string | string[]) => {
     setValue(val.toString())
   }
@@ -312,20 +312,20 @@ export default Example
 
 ### DatePicker
 
-| 参数           | 类型           | 说明                                                                                    |
-|--------------|--------------|---------------------------------------------------------------------------------------|
-| defaultValue | String       | 绑定的值                                                                                  |
-| placeholder  | String       | 输入框提示占位文本                                                                             |
-| clear        | Boolean｜true | 显示清空                                                                                  |
-| disabledDate | Function     | 禁用的时间，return true时将不能选择                                                               |
-| disabled     | Boolean｜true | 是否禁用                                                                                  |
+| 参数           | 类型           | 说明                                                                                                |
+|--------------|--------------|---------------------------------------------------------------------------------------------------|
+| defaultValue | String       | 绑定的值                                                                                              |
+| placeholder  | String       | 输入框提示占位文本                                                                                         |
+| clear        | Boolean｜true | 显示清空                                                                                              |
+| disabledDate | Function     | 禁用的时间，return true时将不能选择                                                                           |
+| disabled     | Boolean｜true | 是否禁用                                                                                              |
 | type         | String       | 面板日期类型，选择后将按此格式返回，年/年月/年月日/年月日时分秒。可选`year,month,date,datetime,datetimeRange,dateRange,monthRange` |
-| format       | String       | 输入框显示的格式，为空时按type默认格式                                                                 |
-| innerText    | Function     | 可以将特殊提示的文本插入到指定的日期里                                                                   |
-| appendToBody | Boolean｜true | 是否将弹出日期面板插入到body中                                                                     |
-| downStyle    | Object       | 下拉面板样式，快速个性化设置单个日期下拉面板                                                                |
-| downClass    | string       | 下拉面板类名                                                                                |
-| readonly     | Boolean｜true | 日期输入框只读模式                                                                             |
-| size         | string       | 添加的大小尺寸样式                                                                             |
-| onChange     | function     | 改变事件                                                                                  |
+| format       | String       | 输入框显示的格式，为空时按type默认格式                                                                             |
+| innerText    | Function     | 可以将特殊提示的文本插入到指定的日期里                                                                               |
+| appendToBody | Boolean｜true | 是否将弹出日期面板插入到body中                                                                                 |
+| downStyle    | Object       | 下拉面板样式，快速个性化设置单个日期下拉面板                                                                            |
+| downClass    | string       | 下拉面板类名                                                                                            |
+| readonly     | Boolean｜true | 日期输入框只读模式                                                                                         |
+| size         | string       | 添加的大小尺寸样式                                                                                         |
+| onChange     | function     | 改变事件                                                                                              |
 

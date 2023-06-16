@@ -1,8 +1,10 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import React, {useState} from 'react';
-import {BrowserRouter, HashRouter,Link} from 'react-router-dom';
+import {HashRouter,Link} from 'react-router-dom';
 import RouterComponent from './router';
 import './assets/scss/app.scss';
-import 'highlight.js/styles/github-dark.css'; // felipec
+//import 'highlight.js/styles/github-dark.css'; // felipec
 import LogoImg from '@/assets/img/logo.jpg';
 import {routerList} from './router/routesConfig';
 

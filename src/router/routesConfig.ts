@@ -20,6 +20,10 @@ export default [
     component: lazy(() => import('../packages/README.md'))
   },
   {
+    path: '/md',
+    component: lazy(() => import('../packages/test.tsx'))
+  },
+  {
     path: '/test',
     component: lazy(() => import('../pages/index'))
   },

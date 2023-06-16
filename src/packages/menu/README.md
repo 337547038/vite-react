@@ -78,7 +78,58 @@ export default Example
 ```jsx
 import {Button} from '../button'
 import {Menu} from './index'
-
+const items = [
+  {
+    label: '用户管理',
+    key: 'user',
+    icon: 'user',
+    children: [
+      {
+        label: '用户列表',
+        key: 'aa'
+      },
+      {
+        label: '添加用户',
+        key: 'ab'
+      }
+    ]
+  },
+  {
+    label: 'Navigator Two',
+    key: 'b',
+    icon: 'search',
+    children: [
+      {
+        label: 'item one',
+        key: 'b1',
+        children: [
+          {
+            label: 'item two',
+            key: 'b2',
+          },
+          {
+            label: 'item three',
+            key: 'b3',
+          }
+        ]
+      },
+      {
+        label: 'item one',
+        key: 'b4',
+      },
+      {
+        label: 'item one',
+        key: 'b5',
+      }
+    ]
+  },
+  {
+    label: '系统设置',
+    key: 'set',
+    icon: 'date',
+    disabled: true
+  }
+]
 function Example() {
   return (<div style={{width: 200}}>
     <Menu items={items} mode="vertical" />
@@ -95,6 +146,60 @@ export default Example
 
 ```jsx
 import {Switch} from '../switch'
+import {useState} from 'react'
+import {Menu} from './index'
+const items = [
+  {
+    label: '用户管理',
+    key: 'user',
+    icon: 'user',
+    children: [
+      {
+        label: '用户列表',
+        key: 'aa'
+      },
+      {
+        label: '添加用户',
+        key: 'ab'
+      }
+    ]
+  },
+  {
+    label: 'Navigator Two',
+    key: 'b',
+    icon: 'search',
+    children: [
+      {
+        label: 'item one',
+        key: 'b1',
+        children: [
+          {
+            label: 'item two',
+            key: 'b2',
+          },
+          {
+            label: 'item three',
+            key: 'b3',
+          }
+        ]
+      },
+      {
+        label: 'item one',
+        key: 'b4',
+      },
+      {
+        label: 'item one',
+        key: 'b5',
+      }
+    ]
+  },
+  {
+    label: '系统设置',
+    key: 'set',
+    icon: 'date',
+    disabled: true
+  }
+]
 function Example() {
   const [collapse, setCollapse] = useState < boolean > (true)
   const onChange = (val: any) => {

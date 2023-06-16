@@ -3,7 +3,7 @@
 ### 基本使用
 
 ```jsx
-import {useRef} from 'react'
+import {useRef,useState} from 'react'
 import {Form} from './index'
 import {FormItem} from '../formItem'
 import {Input} from '../input'
@@ -87,6 +87,7 @@ export default Example
 ```jsx
 import {useRef} from 'react'
 import {Form} from './index'
+import {Input} from '../input'
 import {FormItem} from '../formItem'
 import {Button} from '../button'
 import {Checkbox} from '../checkbox'

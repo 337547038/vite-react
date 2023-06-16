@@ -22,6 +22,14 @@ import Button from '../packages/button'
 ## 开发
 
 ```shell
-yarn install
-yarn dev
+pnpm install
+pnpm dev
 ```
+
+### 开发环境
+
+| 名称   | 版本      |
+|------|---------|
+| node | 16.15.x |
+| pnpm | 8.6.x   |
+| vite | 4.3.x   |
